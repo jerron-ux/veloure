@@ -1,0 +1,44 @@
+/* VELOURÉ — brand tokens. Source of truth for colour: the Lovable build ("Screenshot Perfect"), which
+   took black / sky-blue / silver / white from the shield logo. Values sampled from the 2026-11-07 Lovable
+   recording and the brand board, then rounded. Type tokens are placeholders until the style reference lands. */
+:root {
+  /* surfaces */
+  --bg: #0C0D10;            /* page — Lovable's near-black (sampled #0E0F12 / #090B0B) */
+  --bg-2: #111215;          /* nav bar / raised plates */
+  --bg-3: #16181C;          /* hover surfaces */
+  --plate: rgba(255,255,255,.035);
+  --plate-2: rgba(255,255,255,.06);
+  --rule: rgba(243,245,245,.10);
+  --rule-strong: rgba(243,245,245,.18);
+
+  /* ink */
+  --ink: #F3F5F5;           /* headlines, primary text (Lovable headline #F3F5F5) */
+  --ink-2: #B8B9BC;         /* body / lede (Lovable lede #B8B9BC) */
+  --muted: #8A8C91;         /* labels (Lovable nav links #A5A6A9 / #77787B) */
+  --faint: #5C5E63;         /* placeholders, mount hints */
+
+  /* accent — the one colour: sky blue from the logo */
+  --blue: #A8CDE0;          /* brand board #A6CADD · Lovable badge #ADD1DF */
+  --blue-bright: #CFE6F2;   /* highlights on dark */
+  --blue-deep: #2A6E9F;     /* shield face mid tone — large fills only */
+  --blue-ink: #0F3352;      /* shield navy — text on blue */
+  --blue-line: rgba(168,205,224,.40);
+  --blue-soft: rgba(168,205,224,.10);
+
+  /* metal */
+  --silver: #C9CDD3;
+  --silver-2: #8A9099;
+  --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
+
+  /* status */
+  --ok: #7FD3A6;
+  --err: #F08A8A;
+
+  /* layout */
+  --nav-h: 72px;
+  --gutter: clamp(20px, 4vw, 64px);
+  --max: 1480px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+
+  color-scheme: dark;
+}

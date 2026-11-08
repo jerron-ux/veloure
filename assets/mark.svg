@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 110" width="100" height="110" role="img" aria-label="VELOURÉ shield">
+  <defs>
+    <!-- chrome rim: light from the top-left, two bevel bands -->
+    <linearGradient id="vm-rim" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#FBFCFD"/>
+      <stop offset="0.3" stop-color="#CDD1D7"/>
+      <stop offset="0.58" stop-color="#777D85"/>
+      <stop offset="0.8" stop-color="#AEB3BA"/>
+      <stop offset="1" stop-color="#454B53"/>
+    </linearGradient>
+    <linearGradient id="vm-rim2" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#5F656D"/>
+      <stop offset="0.45" stop-color="#B4B9C0"/>
+      <stop offset="0.7" stop-color="#E6E8EB"/>
+      <stop offset="1" stop-color="#9DA3AA"/>
+    </linearGradient>
+    <linearGradient id="vm-groove" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141A21"/>
+      <stop offset="1" stop-color="#070B10"/>
+    </linearGradient>
+    <!-- glossy navy face, sky-blue sheen upper right, near-black at the foot -->
+    <radialGradient id="vm-face" cx="0.74" cy="0.18" r="0.86">
+      <stop offset="0" stop-color="#55AEE3"/>
+      <stop offset="0.16" stop-color="#2A6E9F"/>
+      <stop offset="0.42" stop-color="#0F3352"/>
+      <stop offset="0.72" stop-color="#081F36"/>
+      <stop offset="1" stop-color="#051324"/>
+    </radialGradient>
+    <linearGradient id="vm-gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <!-- brushed-silver letter -->
+    <linearGradient id="vm-v" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.3" stop-color="#E6E9EC"/>
+      <stop offset="0.55" stop-color="#A9AFB7"/>
+      <stop offset="0.78" stop-color="#DCDFE3"/>
+      <stop offset="1" stop-color="#7F858E"/>
+    </linearGradient>
+    <clipPath id="vm-clip"><path d="M50 11.5 C62 14.3 75.5 16.1 87.5 16.8 L87.5 52 C87.5 73.5 70.5 90 50 98.5 C29.5 90 12.5 73.5 12.5 52 L12.5 16.8 C24.5 16.1 38 14.3 50 11.5 Z"/></clipPath>
+  </defs>
+
+  <!-- outer rim -->
+  <path d="M50 3 C64 7.2 80 9.8 96 10.6 L96 53 C96 78.5 75.5 97.5 50 107.5 C24.5 97.5 4 78.5 4 53 L4 10.6 C20 9.8 36 7.2 50 3 Z" fill="url(#vm-rim)"/>
+  <!-- inner bevel band -->
+  <path d="M50 6.4 C63.5 10.2 78.5 12.6 93 13.3 L93 52.6 C93 76.5 73.5 94.5 50 103.8 C26.5 94.5 7 76.5 7 52.6 L7 13.3 C21.5 12.6 36.5 10.2 50 6.4 Z" fill="url(#vm-rim2)"/>
+  <!-- groove -->
+  <path d="M50 9.8 C62.5 13 76.5 15 89.5 15.6 L89.5 52.3 C89.5 74.8 71.5 91.8 50 100.6 C28.5 91.8 10.5 74.8 10.5 52.3 L10.5 15.6 C23.5 15 37.5 13 50 9.8 Z" fill="url(#vm-groove)"/>
+  <!-- face -->
+  <path d="M50 11.5 C62 14.3 75.5 16.1 87.5 16.8 L87.5 52 C87.5 73.5 70.5 90 50 98.5 C29.5 90 12.5 73.5 12.5 52 L12.5 16.8 C24.5 16.1 38 14.3 50 11.5 Z" fill="url(#vm-face)"/>
+  <g clip-path="url(#vm-clip)">
+    <ellipse cx="54" cy="16" rx="44" ry="24" fill="url(#vm-gloss)"/>
+  </g>
+
+  <!-- the V: navy shadow, then the brushed-silver letter (Trajan-style flared serifs) -->
+  <g transform="translate(1.6 2.2)" fill="#061727" opacity="0.9">
+    <path d="M20 27 L35.5 27 L55.9 68.5 L72.5 27 L78 27 L52 92 Z"/>
+    <path d="M15.5 22.5 L40 22.5 L35.5 27 L20 27 Z"/>
+    <path d="M65.5 22.5 L83 22.5 L78 27 L72.5 27 Z"/>
+  </g>
+  <g fill="url(#vm-v)">
+    <path d="M20 27 L35.5 27 L55.9 68.5 L72.5 27 L78 27 L52 92 Z"/>
+    <path d="M15.5 22.5 L40 22.5 L35.5 27 L20 27 Z"/>
+    <path d="M65.5 22.5 L83 22.5 L78 27 L72.5 27 Z"/>
+  </g>
+  <!-- edge highlight on the rim -->
+  <path d="M50 3 C64 7.2 80 9.8 96 10.6 L96 53 C96 78.5 75.5 97.5 50 107.5 C24.5 97.5 4 78.5 4 53 L4 10.6 C20 9.8 36 7.2 50 3 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.4" stroke-width="0.7"/>
+</svg>

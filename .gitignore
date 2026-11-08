@@ -1,0 +1,10 @@
+# build artefacts and reference material stay local
+screens/
+reference/
+tools/*.png
+tools/*.jpg
+tools/shield-check.html
+tools/mark-check.html
+tools/dbg.py
+.DS_Store
+Thumbs.db
