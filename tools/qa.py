@@ -35,7 +35,7 @@ def run(pw, name, viewport, mobile=False):
         pg.evaluate(f"window.scrollTo({{top: document.getElementById('{sid}').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'}})"); pg.wait_for_timeout(900)
         pg.screenshot(path=str(OUT / f"{name}_{sid}.png"))
     # path finder: click first option 4 times
-    pg.evaluate("document.getElementById('router').scrollIntoView({block:'start'})"); pg.wait_for_timeout(400)
+    pg.evaluate("window.scrollTo({top: document.getElementById('router').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(400)
     for i in range(4):
         opts = pg.query_selector_all("#routerBody .opt")
         if not opts: break
@@ -43,7 +43,7 @@ def run(pw, name, viewport, mobile=False):
     pg.screenshot(path=str(OUT / f"{name}_router_result.png"))
     res_txt = pg.evaluate("(document.querySelector('#routerBody .res h3')||{}).textContent||''")
     # booking: pick a day + slot, continue
-    pg.evaluate("document.getElementById('contact').scrollIntoView({block:'start'})"); pg.wait_for_timeout(500)
+    pg.evaluate("window.scrollTo({top: document.getElementById('contact').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(500)
     pg.screenshot(path=str(OUT / f"{name}_book.png"))
     d = pg.query_selector_all("#bookBody .day"); s = None
     if d: d[1].click(); pg.wait_for_timeout(250); s = pg.query_selector_all("#bookBody .slot:not([disabled])")
