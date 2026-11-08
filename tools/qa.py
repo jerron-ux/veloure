@@ -30,22 +30,25 @@ def run(pw, name, viewport, mobile=False):
     for y in range(0, h, 500): pg.evaluate(f"window.scrollTo(0,{y})"); pg.wait_for_timeout(90)
     pg.evaluate("window.scrollTo(0,0)"); pg.wait_for_timeout(600)
     pg.screenshot(path=str(OUT / f"{name}_full.png"), full_page=True)
-    # section shots
-    for sid in ["what", "router", "how", "fit", "contact"]:
-        pg.evaluate(f"window.scrollTo({{top: document.getElementById('{sid}').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'}})"); pg.wait_for_timeout(900)
+    # station shots
+    for sid in ["statement", "work", "process", "end"]:
+        pg.evaluate(f"window.scrollTo({{top: document.getElementById('{sid}').offsetTop + innerHeight * 0.3, behavior:'instant'}})"); pg.wait_for_timeout(1600)
         pg.screenshot(path=str(OUT / f"{name}_{sid}.png"))
-    # path finder: click first option 4 times
-    pg.evaluate("window.scrollTo({top: document.getElementById('router').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(400)
+    # the work modals open from the arrow list / a11y buttons
+    pg.evaluate("document.querySelector(\"#cards [data-card='funding']\").click()"); pg.wait_for_timeout(600)
+    pg.screenshot(path=str(OUT / f"{name}_modal_funding.png"))
+    pg.keyboard.press("Escape"); pg.wait_for_timeout(500)
+    # path finder: open its modal, click an option 4 times
+    pg.evaluate("document.querySelector(\".arrows [data-open='path']\").click()"); pg.wait_for_timeout(600)
     for i in range(4):
         opts = pg.query_selector_all("#routerBody .opt")
         if not opts: break
-        opt = opts[min(i, len(opts) - 1)]
-        opt.evaluate("e => e.scrollIntoView({block:'center', behavior:'instant'})"); pg.wait_for_timeout(250)   # centre: clear of the preview badge; let flip.js settle
-        opt.click(); pg.wait_for_timeout(350)
+        opts[min(i, len(opts) - 1)].click(); pg.wait_for_timeout(350)
     pg.screenshot(path=str(OUT / f"{name}_router_result.png"))
     res_txt = pg.evaluate("(document.querySelector('#routerBody .res h3')||{}).textContent||''")
-    # booking: pick a day + slot, continue
-    pg.evaluate("window.scrollTo({top: document.getElementById('contact').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(500)
+    pg.keyboard.press("Escape"); pg.wait_for_timeout(500)
+    # booking: open the contact modal, pick a day + slot, continue
+    pg.evaluate("document.querySelector('a.ask').click()"); pg.wait_for_timeout(700)
     pg.screenshot(path=str(OUT / f"{name}_book.png"))
     d = pg.query_selector_all("#bookBody .day"); s = None
     if d: d[1].click(); pg.wait_for_timeout(250); s = pg.query_selector_all("#bookBody .slot:not([disabled])")
@@ -56,9 +59,10 @@ def run(pw, name, viewport, mobile=False):
     # application tab
     pg.click("#tab-apply"); pg.wait_for_timeout(400)
     pg.screenshot(path=str(OUT / f"{name}_apply.png"))
+    modal_open = pg.evaluate("document.documentElement.classList.contains('modal-open')")
+    pg.keyboard.press("Escape"); pg.wait_for_timeout(300)
     if mobile:
         pg.evaluate("window.scrollTo(0,0)"); pg.wait_for_timeout(300)
-        pg.click("#menuBtn"); pg.wait_for_timeout(400); pg.screenshot(path=str(OUT / f"{name}_menu.png")); pg.click("#menuBtn")
     state = pg.evaluate("""() => ({
         ready: document.body.classList.contains('ready'),
         world: document.documentElement.className,
@@ -70,6 +74,7 @@ def run(pw, name, viewport, mobile=False):
         cur: (document.querySelector('.pill a.cur')||{}).textContent || null
     })""")
     print(f"== {name} ==")
+    state['modalWorked'] = modal_open
     print(json.dumps(state, indent=1))
     print("router result:", res_txt.strip()[:80])
     print("console:", logs or "clean")

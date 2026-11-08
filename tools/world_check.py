@@ -38,8 +38,8 @@ with sync_playwright() as pw:
     })""")
     print(json.dumps(st, indent=1))
     h = st["scrollH"]
-    for i, f in enumerate([0.18, 0.42, 0.7, 0.95], 1):
-        pg.evaluate(f"window.scrollTo(0, {int((h - H) * f)})"); pg.wait_for_timeout(1400)
+    for i, f in enumerate([0.16, 0.3, 0.45, 0.62, 0.78, 0.95], 1):
+        pg.evaluate(f"window.scrollTo(0, {int((h - H) * f)})"); pg.wait_for_timeout(2600)
         pg.screenshot(path=str(OUT / f"{tag}_{i}.png"))
     print("console:", logs or "clean")
     b.close()
