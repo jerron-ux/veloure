@@ -61,7 +61,7 @@ def run(pw, name, viewport, mobile=False):
         pg.click("#menuBtn"); pg.wait_for_timeout(400); pg.screenshot(path=str(OUT / f"{name}_menu.png")); pg.click("#menuBtn")
     state = pg.evaluate("""() => ({
         ready: document.body.classList.contains('ready'),
-        shield: document.getElementById('shield').className,
+        world: document.documentElement.className,
         badge: !document.getElementById('previewBadge').hidden,
         fonts: [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family + ' ' + f.style).filter((v,i,a)=>a.indexOf(v)===i),
         appLink: document.querySelector('a.login') ? document.querySelector('a.login').href : null,
