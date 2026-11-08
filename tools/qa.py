@@ -39,7 +39,9 @@ def run(pw, name, viewport, mobile=False):
     for i in range(4):
         opts = pg.query_selector_all("#routerBody .opt")
         if not opts: break
-        opts[min(i, len(opts) - 1)].click(); pg.wait_for_timeout(350)
+        opt = opts[min(i, len(opts) - 1)]
+        opt.evaluate("e => e.scrollIntoView({block:'center', behavior:'instant'})"); pg.wait_for_timeout(250)   # centre: clear of the preview badge; let flip.js settle
+        opt.click(); pg.wait_for_timeout(350)
     pg.screenshot(path=str(OUT / f"{name}_router_result.png"))
     res_txt = pg.evaluate("(document.querySelector('#routerBody .res h3')||{}).textContent||''")
     # booking: pick a day + slot, continue
