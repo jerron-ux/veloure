@@ -25,7 +25,7 @@ with sync_playwright() as pw:
         o[0].click(); pg.wait_for_timeout(300)
     state = pg.evaluate("""() => ({
       live: window.__ocLive, badgeHidden: document.getElementById('previewBadge').hidden,
-      shield: document.getElementById('shield').className,
+      shield: document.documentElement.className,
       fonts: [...document.fonts].filter(f=>f.status==='loaded').map(f=>f.family).filter((v,i,a)=>a.indexOf(v)===i),
       https: location.protocol, title: document.title,
       routerResult: (document.querySelector('#routerBody .res h3')||{}).textContent || null,
