@@ -2,7 +2,7 @@
 
 Rebrand of the Orion funnel site under the VELOURÉ shield brand. Built here (not Lovable).
 
-**Published:** https://jerron-ux.github.io/veloure/ — GitHub Pages from repo `jerron-ux/veloure` (branch `main`, root).
+**Published:** https://velourefunding.com/ — custom domain (Cloudflare Registrar + DNS, Jerron's account) on GitHub Pages from repo `jerron-ux/veloure` (branch `main`, root, `CNAME`). The old https://jerron-ux.github.io/veloure/ address redirects here.
 Forms are LIVE there: they post to the Orion Platform (`app.orioncapitalfunding.com`), whose nginx CORS
 allowlist now includes `https://jerron-ux.github.io` (VELOURE-CORS-01, 2026-11-08).
 

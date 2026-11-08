@@ -18,8 +18,8 @@
     phoneDisplay: '(888) 984-9555',
     email: 'support@orioncapitalfunding.com',
     /* hostnames on which the forms go live (any subdomain matches). The published staging host is
-       jerron-ux.github.io (GitHub Pages, 2026-11-08); add the VELOURÉ domain here when it exists. */
-    siteHosts: ['jerron-ux.github.io', 'orioncapitalfunding.com'],
+       velourefunding.com (custom domain, 2026-11-08) + jerron-ux.github.io (GitHub Pages origin). */
+    siteHosts: ['velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io', 'orioncapitalfunding.com'],
     /* the platform the forms post to. PENDING: the app's new domain. */
     appOrigin: 'https://app.orioncapitalfunding.com',
     appFnPath: '/api/apps/6abd3872a2920c3cae83d45b/functions/'
