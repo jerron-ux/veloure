@@ -8,3 +8,4 @@ tools/mark-check.html
 tools/dbg.py
 .DS_Store
 Thumbs.db
+.secrets/
