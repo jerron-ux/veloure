@@ -12,24 +12,25 @@ with sync_playwright() as pw:
     pg.on("pageerror", lambda e: logs.append("pageerror: " + str(e)))
     pg.on("response", lambda r: api.append((r.request.method, r.url.split("/functions/")[-1].split("?")[0], r.status)) if "app.orioncapitalfunding.com" in r.url else None)
     pg.goto(URL, wait_until="networkidle"); pg.wait_for_timeout(3500)
-    pg.evaluate("window.scrollTo({top: document.getElementById('contact').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(2500)
+    pg.evaluate("document.querySelector('.pill a[href=\"#contact\"]').click()"); pg.wait_for_timeout(2500)   # the contact modal
     days = pg.query_selector_all("#bookBody .day")
     if days: days[0].click(); pg.wait_for_timeout(600)
     slots = pg.query_selector_all("#bookBody .slot:not([disabled])")
     first_slot = slots[0].inner_text() if slots else None
     pg.screenshot(path="screens/live_booking.png")
-    pg.evaluate("window.scrollTo({top: document.getElementById('router').getBoundingClientRect().top + window.scrollY - 70, behavior:'instant'})"); pg.wait_for_timeout(500)
+    pg.keyboard.press("Escape"); pg.wait_for_timeout(500)
+    pg.evaluate("document.querySelector('.arrows [data-open=\"path\"]').click()"); pg.wait_for_timeout(700)   # the path finder modal
     for i in range(4):
         o = pg.query_selector_all("#routerBody .opt")
         if not o: break
         o[0].click(); pg.wait_for_timeout(300)
     state = pg.evaluate("""() => ({
       live: window.__ocLive, badgeHidden: document.getElementById('previewBadge').hidden,
-      shield: document.documentElement.className,
+      world: document.documentElement.className,
       fonts: [...document.fonts].filter(f=>f.status==='loaded').map(f=>f.family).filter((v,i,a)=>a.indexOf(v)===i),
       https: location.protocol, title: document.title,
       routerResult: (document.querySelector('#routerBody .res h3')||{}).textContent || null,
-      legalLinks: [...document.querySelectorAll('footer .foot a')].map(a=>a.href).filter(h=>/privacy|terms|sms/.test(h))
+      legalLinks: [...document.querySelectorAll('footer a')].map(a=>a.href).filter(h=>/privacy|terms|sms/.test(h))
     })""")
     print(json.dumps(state, indent=1))
     print("days:", len(days), "| open slots on first day:", len(slots), "| first:", first_slot)
