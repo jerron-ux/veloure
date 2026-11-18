@@ -26,7 +26,11 @@
 <link rel="preload" href="assets/fonts/chakra-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/chakra-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/sharetech-mono.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="modulepreload" href="vendor/three.module.min.js">
+<script>
+/* WebGL probe (ruling 2026-11-18): fetch three.js only when the 3D scene can actually run; otherwise mark no-world now so the HTML page shows at once. */
+(function(){var ok=false;try{var c=document.createElement('canvas');ok=!!(window.WebGLRenderingContext&&(c.getContext('webgl2')||c.getContext('webgl')));}catch(e){}
+if(ok){var l=document.createElement('link');l.rel='modulepreload';l.href='vendor/three.module.min.js';document.head.appendChild(l);}else{document.documentElement.classList.add('no-world');}})();
+</script>
 <link rel="stylesheet" href="tokens.css?v=20261118b">
 <link rel="stylesheet" href="styles.css?v=20261118b">
 <script type="application/ld+json">

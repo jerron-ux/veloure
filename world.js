@@ -5,12 +5,12 @@
    type inside the scene, work as floating cards you can pick, a lit stage,
    and the emblem waiting again at the end. three.js, self-hosted; CSP-clean.
    ========================================================================== */
-import * as THREE from './vendor/three.module.min.js';
-
-(function init() {
+(async function init() {
   const html = document.documentElement;
   const canvas = document.getElementById('world');
   if (!canvas) return;
+  if (html.classList.contains('no-world')) return; // head probe found no WebGL: three.js is never fetched (ruling 2026-11-18)
+  const THREE = await import('./vendor/three.module.min.js'); // loaded here, after the check (the head adds a modulepreload so capable browsers fetch it at once)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mobile = matchMedia('(max-width: 820px)').matches || (('ontouchstart' in window) && innerWidth < 1024);
 
@@ -444,4 +444,4 @@ import * as THREE from './vendor/three.module.min.js';
   }
   loop();
   setTimeout(() => { if (!readySent) { readySent = true; document.dispatchEvent(new CustomEvent('world:ready')); } }, 6000);
-})();
+})().catch(function (e) { console.error('world: scene failed to start', e); document.documentElement.classList.add('no-world'); document.dispatchEvent(new CustomEvent('world:ready')); });
