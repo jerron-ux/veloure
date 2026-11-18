@@ -16,12 +16,12 @@
     brand: 'VELOURÉ',
     legalName: 'VELOURÉ LLC',
     phoneDisplay: '(888) 984-9555',
-    email: 'support@veloure.com', /* PLACEHOLDER (ruling 2026-11-17): no Workspace mailbox yet */
+    email: 'support@veloure.us', /* PLACEHOLDER (ruling 2026-11-17): mailbox on veloure.us not created yet */
     /* hostnames on which the forms go live (any subdomain matches). The published staging host is
-       velourefunding.com (custom domain, 2026-11-08) + jerron-ux.github.io (GitHub Pages origin). */
-    siteHosts: ['velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io', 'orioncapitalfunding.com'],
+       veloure.us (custom domain, 2026-11-17; velourefunding.com 301-redirects to it) + jerron-ux.github.io (GitHub Pages origin). */
+    siteHosts: ['veloure.us', 'www.veloure.us', 'velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io', 'orioncapitalfunding.com'],
     /* the platform the forms post to. PENDING: the app's new domain. */
-    appOrigin: 'https://app.orioncapitalfunding.com',
+    appOrigin: 'https://app.velourefunding.com',
     appFnPath: '/api/apps/6abd3872a2920c3cae83d45b/functions/'
   };
   window.__siteConfig = CONFIG;
@@ -110,7 +110,8 @@
   // always says exactly what was agreed to. Bump the version whenever the text changes.
   // v1 under VELOURÉ LLC (2026-11-08) = orioncapital-web-consent-v3-2026-11-02 clauses, brand/entity swapped.
   // v2 (2026-11-17): same clauses, contact email → support@veloure.com (placeholder). Eric's OK before live.
-  var CONSENT_VERSION = 'veloure-web-consent-v2-2026-11-17';
+  // v3 (2026-11-17): same clauses, contact email → support@veloure.us (domain moved to veloure.us).
+  var CONSENT_VERSION = 'veloure-web-consent-v3-2026-11-17';
   var CONSENT_TEXT = 'By providing my phone number and checking this box, I agree to receive SMS marketing and informational text messages from ' + CONFIG.brand + ' (' + CONFIG.legalName + '), including funding options and offers, appointment confirmations, document requests and application status updates. You are opting into marketing texts from ' + CONFIG.brand + '. Consent is not a condition of any purchase or service. Message frequency may vary. Standard message and data rates may apply. Reply STOP to opt out. Reply HELP for help, call ' + CONFIG.phoneDisplay + ' or email ' + CONFIG.email + '. We will not share mobile information with third parties for promotional or marketing purposes. See our Privacy Policy and SMS Terms.';
   var CONSENT_HTML = CONSENT_TEXT.replace('Privacy Policy', '<a href="privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>')
     .replace('SMS Terms', '<a href="sms-terms/" target="_blank" rel="noopener">SMS Terms</a>');
@@ -741,7 +742,7 @@
   "use strict";
   if (!window.__ocLive) { window.__obBeacon = function () {}; window.__obJourney = function () {}; return; } /* preview: no telemetry */
   try {
-    var CFG = window.__siteConfig || { appOrigin: 'https://app.orioncapitalfunding.com', appFnPath: '/api/apps/6abd3872a2920c3cae83d45b/functions/' };
+    var CFG = window.__siteConfig || { appOrigin: 'https://app.velourefunding.com', appFnPath: '/api/apps/6abd3872a2920c3cae83d45b/functions/' };
     var BEACON_URL = CFG.appOrigin + CFG.appFnPath + 'siteBeacon';
     var JOURNEY_URL = CFG.appOrigin + CFG.appFnPath + 'webJourneyEvent';
     var SID_KEY = 'ob_sid', FIRST_KEY = 'ob_first_sent', FSTART_KEY = 'ob_form_started';
