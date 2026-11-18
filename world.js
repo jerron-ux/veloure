@@ -69,8 +69,11 @@ import * as THREE from './vendor/three.module.min.js';
   function makeEmblem() {
     const g = new THREE.Group();
     g.add(new THREE.Mesh(new THREE.TorusGeometry(RING_R, 0.028, 24, 160), chrome));
-    const sh = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), new THREE.MeshStandardMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 }));
-    sh.position.z = 0.02; g.add(sh);
+    const markMat = new THREE.MeshStandardMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 });
+    // two faces back to back: a single plane is culled from behind, so the mark vanished for half of every
+    // coin-spin (fix 2026-11-17). The rear face is turned 180 deg, so the VF reads correctly from either side.
+    const front = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), markMat); front.position.z = 0.02; g.add(front);
+    const back = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), markMat); back.position.z = -0.02; back.rotation.y = Math.PI; g.add(back);
     return g;
   }
   const emblem = makeEmblem(); scene.add(emblem);
