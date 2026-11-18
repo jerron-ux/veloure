@@ -10,13 +10,13 @@
   "use strict";
 
   /* ================= CONFIG — the only block that carries brand or endpoint values =================
-     Rulings 2026-11-08 (Jerron): entity VELOURÉ LLC · contact details same as Orion for now · the app
+     Rulings 2026-11-08 (Jerron): entity VELOURÉ LLC · phone same as Orion for now · the app
      moves to a new domain (not named yet) — set APP_ORIGIN and SITE_HOSTS when known. */
   var CONFIG = {
     brand: 'VELOURÉ',
     legalName: 'VELOURÉ LLC',
     phoneDisplay: '(888) 984-9555',
-    email: 'support@orioncapitalfunding.com',
+    email: 'support@veloure.com', /* PLACEHOLDER (ruling 2026-11-17): no Workspace mailbox yet */
     /* hostnames on which the forms go live (any subdomain matches). The published staging host is
        velourefunding.com (custom domain, 2026-11-08) + jerron-ux.github.io (GitHub Pages origin). */
     siteHosts: ['velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io', 'orioncapitalfunding.com'],
@@ -89,9 +89,9 @@
 
   // Contact-consent wording shown to the visitor. Version-stamped so the record stored with the lead
   // always says exactly what was agreed to. Bump the version whenever the text changes.
-  // v1 under VELOURÉ LLC (2026-11-08) — same clauses as orioncapital-web-consent-v3-2026-11-02 with the
-  // brand/entity swapped. SMS consent wording is a compliance item: Eric's OK before it goes live.
-  var CONSENT_VERSION = 'veloure-web-consent-v1-2026-11-08';
+  // v1 under VELOURÉ LLC (2026-11-08) = orioncapital-web-consent-v3-2026-11-02 clauses, brand/entity swapped.
+  // v2 (2026-11-17): same clauses, contact email → support@veloure.com (placeholder). Eric's OK before live.
+  var CONSENT_VERSION = 'veloure-web-consent-v2-2026-11-17';
   var CONSENT_TEXT = 'By providing my phone number and checking this box, I agree to receive SMS marketing and informational text messages from ' + CONFIG.brand + ' (' + CONFIG.legalName + '), including funding options and offers, appointment confirmations, document requests and application status updates. You are opting into marketing texts from ' + CONFIG.brand + '. Consent is not a condition of any purchase or service. Message frequency may vary. Standard message and data rates may apply. Reply STOP to opt out. Reply HELP for help, call ' + CONFIG.phoneDisplay + ' or email ' + CONFIG.email + '. We will not share mobile information with third parties for promotional or marketing purposes. See our Privacy Policy and SMS Terms.';
   var CONSENT_HTML = CONSENT_TEXT.replace('Privacy Policy', '<a href="privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>')
     .replace('SMS Terms', '<a href="sms-terms/" target="_blank" rel="noopener">SMS Terms</a>');

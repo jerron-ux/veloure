@@ -1,8 +1,8 @@
 # legal.py — ports the four legal pages from the Orion site to VELOURÉ pages.
 # Source snapshots: reference/legal-src/<slug>.html (fetched 2026-11-08). Text is kept verbatim except:
 # entity/brand swapped (Jerron's ruling: VELOURÉ LLC), site-domain mentions → "this website", links made
-# relative, effective date/version reset for the new entity. Contact details stay Orion's (ruling: same for
-# now). Auto-reply quotes on the SMS-consent page are NOT swapped: the shared numbers still send Orion's text.
+# relative, effective date/version reset for the new entity. Phone stays Orion's (same for now); email = support@veloure.com
+# PLACEHOLDER (ruling 2026-11-17, no mailbox yet). Auto-reply quotes on the SMS-consent page are NOT swapped: the shared numbers still send Orion's text.
 # Flagged for counsel/Eric before the real domain goes live.
 # run: uv run python tools/legal.py
 import re, html, pathlib
@@ -31,7 +31,8 @@ SUBS = [
     ('Orion Capital Funding', 'VELOURÉ'),
     ("Orion Capital's", "VELOURÉ's"),
     ('Orion Capital', 'VELOURÉ'),
-    ('orioncapital-web-consent-v3-2026-11-02', 'veloure-web-consent-v1-2026-11-08'),
+    ('orioncapital-web-consent-v3-2026-11-02', 'veloure-web-consent-v2-2026-11-17'),
+    ('support@orioncapitalfunding.com', 'support@veloure.com'),   # placeholder email (ruling 2026-11-17); quoted auto-replies are held out by `keep` in port()
     # links → relative
     ('href="https://orioncapitalfunding.com/qualify/"', 'href="../#apply"'),
     ('href="/qualify/"', 'href="../#apply"'),
@@ -53,11 +54,11 @@ SUBS = [
 def port(slug):
     s = (SRC / f"{slug}.html").read_text(encoding="utf-8", errors="replace")
     a = re.search(r"<article[^>]*>(.*?)</article>", s, re.S).group(1)
-    # protect auto-reply quotes (what the shared numbers really send)
+    # protect auto-reply quotes (what the shared numbers really send). Source uses &ldquo;/&rdquo; entities and wraps "Orion\nCapital".
     keep = []
     if slug == "sms-consent":
         def hold(m): keep.append(m.group(0)); return f"@@KEEP{len(keep)-1}@@"
-        a = re.sub(r"<em>“(You're|VELOURÉ|Orion Capital Funding:)[^<]*”</em>", hold, a)
+        a = re.sub(r"<em>(?:“|&ldquo;)(You're|VELOURÉ|Orion\s+Capital Funding:)[^<]*(?:”|&rdquo;)</em>", hold, a)
     for old, new in SUBS: a = a.replace(old, new)
     a = re.sub(r"(?<![@.\w/])orioncapitalfunding\.com", "this website", a)      # bare domain mentions
     a = re.sub(r"tel:\+1[\d*]+", "tel:+18889849555", a)                            # normalise tel links

@@ -19,7 +19,7 @@ allowlist now includes `https://jerron-ux.github.io` (VELOURE-CORS-01, 2026-11-0
   scripts/styles so a strict CSP can be added when hosting supports headers (GitHub Pages does not).
 - **Business logic:** `main.js` = the Orion IIFE ported verbatim behind one `CONFIG` block (brand, legal name,
   contacts, `siteHosts`, `appOrigin`, `appFnPath`); off a listed host everything is simulated and a
-  "PREVIEW — FORMS NOT LIVE" badge shows. Consent text = `veloure-web-consent-v1-2026-11-08`.
+  "PREVIEW — FORMS NOT LIVE" badge shows. Consent text = `veloure-web-consent-v2-2026-11-17`.
 
 ## Files
 | path | what |

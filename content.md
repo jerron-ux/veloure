@@ -71,7 +71,7 @@ Phone sheet footer: Blog · Client login → · phone **[PENDING]**
 - © line **[PENDING entity]** · `Built for clarity, not hype.`
 
 ## In main.js (not page copy, but brand-bearing) — all **[PENDING entity / contact]**
-- `CONSENT_TEXT` names "Orion Capital (Orion Capital Funding LLC)", (888) 984-9555, support@orioncapitalfunding.com; `CONSENT_VERSION orioncapital-web-consent-v3-2026-11-02`
+- `CONSENT_TEXT` names "VELOURÉ (VELOURÉ LLC)", (888) 984-9555, support@veloure.com — PLACEHOLDER (ruling 2026-11-17: no Google Workspace yet, mailbox does not exist); `CONSENT_VERSION veloure-web-consent-v2-2026-11-17`
 - `TERMS_TEXT` / `TERMS_VERSION orioncapital-web-terms-v1-2026-10-14`
 - Endpoints: `app.orioncapitalfunding.com/api/apps/6abd3872a2920c3cae83d45b/functions/{publicIntake,bookingSlots,bookingCreate,siteBeacon,webJourneyEvent}`
 - `LIVE` host regex: `orioncapitalfunding.com` → must include the VELOURÉ domain
