@@ -37,7 +37,7 @@
   {
     const c = document.createElement('canvas'); c.width = 16; c.height = 1024;
     const g = c.getContext('2d'); const gr = g.createLinearGradient(0, 0, 0, 1024);
-    gr.addColorStop(0, '#2b5468'); gr.addColorStop(0.16, '#172c38'); gr.addColorStop(0.42, '#0b0e12'); gr.addColorStop(1, '#040506');
+    gr.addColorStop(0, '#3B4147'); gr.addColorStop(0.16, '#1F2529'); gr.addColorStop(0.42, '#0b0e12'); gr.addColorStop(1, '#040506');
     g.fillStyle = gr; g.fillRect(0, 0, 16, 1024);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; scene.background = t;
   }
@@ -46,12 +46,12 @@
   {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
     const gr = g.createLinearGradient(0, 0, 0, 512);
-    gr.addColorStop(0, '#dce9f2'); gr.addColorStop(0.35, '#55646f'); gr.addColorStop(0.62, '#1a2026'); gr.addColorStop(1, '#05070a');
+    gr.addColorStop(0, '#E8E4DE'); gr.addColorStop(0.35, '#5E6064'); gr.addColorStop(0.62, '#1E2124'); gr.addColorStop(1, '#05070a');
     g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
     const box = (x, y, w, h, col, a) => { const r = g.createLinearGradient(0, y, 0, y + h); r.addColorStop(0, 'rgba(255,255,255,0)'); r.addColorStop(0.5, col); r.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = a; g.fillStyle = r; g.fillRect(x, y, w, h); g.globalAlpha = 1; };
     box(60, 90, 420, 70, '#ffffff', 0.95); box(560, 150, 380, 50, '#ffffff', 0.8); box(200, 250, 700, 40, '#ffffff', 0.5);
     const spot = (x, y, r, col) => { const s = g.createRadialGradient(x, y, 0, x, y, r); s.addColorStop(0, col); s.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = s; g.fillRect(x - r, y - r, r * 2, r * 2); };
-    spot(300, 320, 150, 'rgba(255,150,190,0.75)'); spot(800, 300, 170, 'rgba(140,200,255,0.8)'); spot(520, 60, 120, 'rgba(168,205,224,0.9)');
+    spot(300, 320, 150, 'rgba(226,150,100,0.75)'); spot(800, 300, 170, 'rgba(205,210,216,0.8)'); spot(520, 60, 120, 'rgba(226,172,133,0.9)');
     const tex = new THREE.CanvasTexture(c); tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
     const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose();
   }
@@ -148,7 +148,7 @@
     }`;
   const textPlanes = [];
   function textPlane(lines, opts) {
-    const o = Object.assign({ size: 150, weight: 700, width: 2048, align: 'left', color: '#F2F7F9', lineHeight: 0.98, family: 'Chakra Petch' }, opts || {});
+    const o = Object.assign({ size: 150, weight: 700, width: 2048, align: 'left', color: '#F4F4F2', lineHeight: 0.98, family: 'Chakra Petch' }, opts || {});
     const c = document.createElement('canvas'); const g = c.getContext('2d');
     const font = `${o.weight} ${o.size}px "${o.family}", "Share Tech Mono", monospace`;
     g.font = font;
@@ -179,7 +179,7 @@
   let seed = 11; const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   function cardTexture(def, i) {
     const W = 1024, H = 640, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
-    g.fillStyle = '#0a0f15'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#0C0F11'; g.fillRect(0, 0, W, H);
     // painterly weather: soft blooms in the card's hue family, silver and a little gold
     for (let k = 0; k < 26; k++) {
       const x = rnd() * W, y = rnd() * H, r = 120 + rnd() * 320;
@@ -187,23 +187,23 @@
       const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `hsla(${h},${sat}%,${lig}%,${a})`); gr.addColorStop(1, 'hsla(0,0%,0%,0)');
       g.fillStyle = gr; g.fillRect(0, 0, W, H);
     }
-    for (let k = 0; k < 7; k++) { const x = rnd() * W, y = rnd() * H, r = 60 + rnd() * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${k % 3 ? '215,228,236' : '214,186,120'},${0.08 + rnd() * 0.1})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+    for (let k = 0; k < 7; k++) { const x = rnd() * W, y = rnd() * H, r = 60 + rnd() * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${k % 3 ? '232,230,226' : '214,186,120'},${0.08 + rnd() * 0.1})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
     // grain
     const id = g.getImageData(0, 0, W, H), d = id.data; for (let p = 0; p < d.length; p += 16) { const n = (rnd() - 0.5) * 18; d[p] += n; d[p + 1] += n; d[p + 2] += n; } g.putImageData(id, 0, 0);
     // scanlines + vignette
     g.fillStyle = 'rgba(0,0,0,0.18)'; for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
     const vg = g.createLinearGradient(0, 0, W, 0); vg.addColorStop(0, 'rgba(0,0,0,0.42)'); vg.addColorStop(0.6, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
     // frame
-    g.strokeStyle = 'rgba(191,227,236,0.55)'; g.lineWidth = 3; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
+    g.strokeStyle = 'rgba(226,172,133,0.55)'; g.lineWidth = 3; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
     // type
-    g.textBaseline = 'alphabetic'; g.fillStyle = 'rgba(191,227,236,0.9)'; g.font = '400 24px "Chakra Petch", "Share Tech Mono", monospace';
+    g.textBaseline = 'alphabetic'; g.fillStyle = 'rgba(226,172,133,0.9)'; g.font = '400 24px "Chakra Petch", "Share Tech Mono", monospace';
     g.fillText(`${String(i + 1).padStart(2, '0')}  //  ${def.kicker.toUpperCase()}`, 64, 92);
     const title = def.title.toUpperCase().split(' '); const lines = []; let cur = '';
     g.font = '700 108px "Chakra Petch", "Share Tech Mono", monospace';
     title.forEach(wd => { const t = cur ? cur + ' ' + wd : wd; if (g.measureText(t).width > W - 150 && cur) { lines.push(cur); cur = wd; } else cur = t; }); if (cur) lines.push(cur);
     const baseY = H / 2 + 20 - (lines.length - 1) * 52;
-    lines.forEach((l, k) => { const y = baseY + k * 108; g.fillStyle = 'rgba(80,220,255,0.55)'; g.fillText(l, 60, y); g.fillStyle = 'rgba(255,90,150,0.45)'; g.fillText(l, 68, y + 2); g.fillStyle = '#F4F8FA'; g.fillText(l, 64, y); });
-    g.fillStyle = 'rgba(191,227,236,0.75)'; g.font = '400 22px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 64);
+    lines.forEach((l, k) => { const y = baseY + k * 108; g.fillStyle = 'rgba(226,140,70,0.55)'; g.fillText(l, 60, y); g.fillStyle = 'rgba(200,208,214,0.45)'; g.fillText(l, 68, y + 2); g.fillStyle = '#F4F4F2'; g.fillText(l, 64, y); });
+    g.fillStyle = 'rgba(226,172,133,0.75)'; g.font = '400 22px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 64);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
     return tex;
   }
@@ -313,7 +313,7 @@
       });
       knot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.62, 0.17, 220, 28, 2, 3), chrome);
       knot.position.set(mobile ? 0.9 : vw * 0.18, yAt(S.work, 0.5), -2.6); knot.userData.spin = 0.25; journey.add(knot); drifters.push(knot);
-      const bursts = [[0.78, 0.5, 0.95], [0.4, 0.85, 0.9], [0.9, 0.78, 0.45]];
+      const bursts = [[0.93, 0.55, 0.30], [0.86, 0.86, 0.84], [0.96, 0.74, 0.52]];
       bursts.forEach((c, k) => { const cx = (k - 1) * 1.6 + (rnd() - 0.5), cy = yAt(S.work, 0.25 + k * 0.25), cz = -1.6 - rnd() * 2; journey.add(pointsCloud(mobile ? 160 : 420, () => { const r = Math.pow(rnd(), 0.5) * 1.3, a = rnd() * 6.283, b = (rnd() - 0.5) * 2.2; return { p: [cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.7 + b * 0.3, cz + b], c: c }; }, 2.0)); });
       for (let k = 0; k < (mobile ? 5 : 12); k++) { const d = new THREE.Mesh(new THREE.SphereGeometry(0.05 + rnd() * 0.09, 24, 16), chrome); d.position.set((rnd() - 0.5) * vw * 1.1, yAt(S.work, rnd()), -1.5 + rnd() * 2.6); d.userData.spin = 0; d.userData.bob = rnd() * 6; journey.add(d); drifters.push(d); }
     }
@@ -321,7 +321,7 @@
     // process: a lit stage — a ring of particles over a reflective floor between chrome pillars
     if (S.process) {
       const cy = yAt(S.process, 0.5), cx = mobile ? 0 : vw * 0.2;
-      stageTorus = pointsCloud(mobile ? 700 : 1800, () => { const u = rnd() * 6.283, v = rnd() * 6.283, R = 1.0, r = 0.14 + rnd() * 0.22; const k = rnd(); const c = k < 0.55 ? [0.88, 0.92, 0.96] : k < 0.85 ? [0.66, 0.8, 0.92] : [0.72, 0.55, 0.95]; return { p: [(R + r * Math.cos(v)) * Math.cos(u), (R + r * Math.cos(v)) * Math.sin(u), r * Math.sin(v)], c }; }, 2.2);
+      stageTorus = pointsCloud(mobile ? 700 : 1800, () => { const u = rnd() * 6.283, v = rnd() * 6.283, R = 1.0, r = 0.14 + rnd() * 0.22; const k = rnd(); const c = k < 0.55 ? [0.94, 0.93, 0.91] : k < 0.85 ? [0.78, 0.79, 0.80] : [0.93, 0.58, 0.32]; return { p: [(R + r * Math.cos(v)) * Math.cos(u), (R + r * Math.cos(v)) * Math.sin(u), r * Math.sin(v)], c }; }, 2.2);
       stageTorus.position.set(cx, cy + 0.15, -1.6); stageTorus.rotation.set(0.35, 0, 0.2); journey.add(stageTorus);
       const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 6), new THREE.MeshStandardMaterial({ color: 0x05070a, metalness: 0.5, roughness: 0.6, envMapIntensity: 0.45 })); floor.rotation.x = -Math.PI / 2; floor.position.set(cx, cy - 1.5, -3.2); journey.add(floor);
       for (let k = 0; k < 6; k++) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 4.2, 12), chrome); const a = (k / 6) * 6.283; p.position.set(cx + Math.cos(a) * 2.2, cy + 0.6, -1.6 + Math.sin(a) * 1.4); journey.add(p); }

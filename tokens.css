@@ -1,6 +1,6 @@
-/* VELOURÉ — brand tokens. Source of truth for colour: the Lovable build ("Screenshot Perfect"), which
-   took black / sky-blue / silver / white from the shield logo. Values sampled from the 2026-11-07 Lovable
-   recording and the brand board, then rounded. Type tokens are placeholders until the style reference lands. */
+/* VELOURÉ — brand tokens. Colour source of truth: the VF logo (2026-11-17 brand render, reference/brand/):
+   near-black surfaces, copper accent (mark sampled #CD7323 / #E2AC85 / #884224), neutral white (the VELOURE
+   letters #FAFBFB), steel/silver for chrome. Surfaces/ink were sampled from the 2026-11-07 Lovable build. */
 :root {
   /* surfaces */
   --bg: #0C0D10;            /* page — Lovable's near-black (sampled #0E0F12 / #090B0B) */
@@ -17,18 +17,20 @@
   --muted: #8A8C91;         /* labels (Lovable nav links #A5A6A9 / #77787B) */
   --faint: #5C5E63;         /* placeholders, mount hints */
 
-  /* accent — the one colour: sky blue from the logo */
-  --blue: #A8CDE0;          /* brand board #A6CADD · Lovable badge #ADD1DF */
-  --blue-bright: #CFE6F2;   /* highlights on dark */
-  --blue-deep: #2A6E9F;     /* shield face mid tone — large fills only */
-  --blue-ink: #0F3352;      /* shield navy — text on blue */
-  --blue-line: rgba(168,205,224,.40);
-  --blue-soft: rgba(168,205,224,.10);
+  /* accent — the one colour: copper from the VF mark (ruling 2026-11-17; replaced the shield's sky blue) */
+  --accent: #D4823A;        /* orange-copper — lines, borders, glows (mark #CD7323 lifted for screens) */
+  --accent-bright: #F0C39C; /* lit copper edge — highlights on dark */
+  --accent-deep: #884224;   /* dark copper — large fills only */
+  --accent-ink: #2A1507;    /* bronze — text on copper */
+  --accent-rgb: 212,130,58;
+  --accent-line: rgba(212,130,58,.40);
+  --accent-soft: rgba(212,130,58,.10);
 
   /* metal */
   --silver: #C9CDD3;
   --silver-2: #8A9099;
   --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
+  --copper-grad: linear-gradient(100deg, #F0C39C 0%, #CD7323 38%, #E2AC85 62%, #884224 100%);
 
   /* status */
   --ok: #7FD3A6;

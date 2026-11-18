@@ -25,11 +25,11 @@
       var d = Math.hypot(x - cx, y - cy); if (d > r) continue;
       var h = Math.sin(i * 12.9898 + j * 78.233 + Math.floor(t * 6) * 0.7) * 43758.5453; h = h - Math.floor(h);
       var isDigit = h > 0.955, near = 1 - d / r;
-      g.fillStyle = isDigit ? 'rgba(191,227,236,' + (0.55 + near * 0.4) + ')' : 'rgba(191,227,236,' + (0.14 + near * 0.22) + ')';
+      g.fillStyle = isDigit ? 'rgba(226,172,133,' + (0.55 + near * 0.4) + ')' : 'rgba(226,172,133,' + (0.14 + near * 0.22) + ')';
       g.fillText(isDigit ? String(Math.floor(h * 97) % 10) : '/', x, y);
     }
     g.fillStyle = 'rgba(8,12,16,0.92)'; g.fillRect(cx - cell * 2.6, cy - cell * 0.9, cell * 5.2, cell * 1.8);
-    g.fillStyle = Math.floor(t * 2) % 2 ? '#EAF6FA' : '#BFE3EC'; g.font = '700 ' + (cell * 1.5) + 'px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('>>>', cx, cy + 1);
+    g.fillStyle = Math.floor(t * 2) % 2 ? '#F4F4F2' : '#E2AC85'; g.font = '700 ' + (cell * 1.5) + 'px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('>>>', cx, cy + 1);
   }
   function tickLoader() { if (loaderDone) return; drawLoader(); ldTimer = setTimeout(tickLoader, 110); }
   tickLoader();

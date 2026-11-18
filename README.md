@@ -14,7 +14,7 @@ allowlist now includes `https://jerron-ux.github.io` (VELOURE-CORS-01, 2026-11-0
   a two-band chrome bevel, glossy domed navy face with the logo's cyan sheen baked in, brushed-silver V decal,
   procedural studio environment with a slow light sweep, idle sway + mouse parallax. Falls back to the SVG mark
   with no WebGL / reduced motion; pauses offscreen.
-- **Colour:** the Lovable build's palette (black / sky-blue / silver / white, from the logo) → `tokens.css`.
+- **Colour:** near-black / copper / neutral white / steel, matched to the VF logo (ruling 2026-11-17; was the shield's sky blue) → `tokens.css`.
 - **Stack:** static HTML + CSS + vanilla JS, no framework, no build, no third-party anything; no inline
   scripts/styles so a strict CSP can be added when hosting supports headers (GitHub Pages does not).
 - **Business logic:** `main.js` = the Orion IIFE ported verbatim behind one `CONFIG` block (brand, legal name,
