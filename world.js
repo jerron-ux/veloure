@@ -291,8 +291,8 @@
       journey.add(statementPlane);
       // the platform: a dark slab just above the eye, seen edge-on, carrying gold dust along its lip
       platform = new THREE.Group();
-      const slab = new THREE.Mesh(new THREE.PlaneGeometry(60, 9), new THREE.MeshStandardMaterial({ color: 0x05070a, metalness: 0.4, roughness: 0.75, envMapIntensity: 0.35, side: THREE.DoubleSide }));
-      slab.rotation.x = -Math.PI / 2; slab.position.set(0, 0, -5.5); platform.add(slab);
+      // slab removed (ruling 2026-11-18, Eric's "cut" report): the dark shelf showed as a black bar across the ring from certain angles.
+      // The gold dust particles remain, floating without the shelf.
       platform.add(pointsCloud(mobile ? 320 : 1000, () => { const x = (rnd() - 0.5) * 26, z = -1.2 - rnd() * rnd() * 8; const lift = (rnd() - 0.5) * 0.5 * (1 + (-z) * 0.08); const warm = rnd() < 0.72; return { p: [x, lift, z], c: warm ? [0.92, 0.78, 0.44] : [0.86, 0.9, 0.95] }; }, 2.6));
       platform.position.set(0, yAt(S.statement, 0.5) + 1.05, 0); platform.visible = false;
       journey.add(platform);
