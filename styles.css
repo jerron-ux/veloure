@@ -25,7 +25,8 @@
 /* ---------- base ---------- */
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:#040506}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cue span{animation:none}}
+.skip{position:absolute;left:-9999px;top:12px;z-index:60;padding:10px 14px;background:var(--tech);color:#0C0D10;font-size:11px;letter-spacing:.2em;text-transform:uppercase}.skip:focus{left:12px}
 body{
   margin:0;color:var(--ink);background:transparent;
   font-family:var(--ui);font-weight:400;font-size:13px;line-height:1.7;letter-spacing:.06em;

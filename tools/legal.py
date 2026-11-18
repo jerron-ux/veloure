@@ -9,7 +9,9 @@ import re, html, pathlib
 
 R = pathlib.Path(__file__).resolve().parent.parent
 SRC = R / "reference" / "legal-src"
+if not SRC.exists(): SRC = pathlib.Path("C:/Users/jerro/Documents/Orion/veloure-site/reference/legal-src")  # worktrees: sources are git-ignored, read the main checkout
 EFFECTIVE = "November 08, 2026"
+HOST = (R / "CNAME").read_text(encoding="utf-8").strip()   # canonical host, one source of truth
 
 PAGES = {
     "privacy-policy": dict(title="Privacy Policy", applies="this website, the client portal at app.orioncapitalfunding.com, and all VELOURÉ services",
@@ -79,6 +81,7 @@ TPL = """<!DOCTYPE html>
 <title>{title} | VELOURÉ</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="{canon}">
 <meta name="theme-color" content="#0C0D10">
 <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
@@ -121,6 +124,6 @@ TPL = """<!DOCTYPE html>
 for slug, meta in PAGES.items():
     out = R / slug / "index.html"; out.parent.mkdir(exist_ok=True)
     body = port(slug)
-    out.write_text(TPL.format(title=meta["title"], desc=meta["desc"], applies=meta["applies"], effective=EFFECTIVE, body=body), encoding="utf-8")
+    out.write_text(TPL.format(title=meta["title"], desc=meta["desc"], applies=meta["applies"], effective=EFFECTIVE, body=body, canon=f"https://{HOST}/{slug}/"), encoding="utf-8")
     left = re.findall(r"Orion[^<]{0,40}", body)
     print(f"{slug}: {len(body):,} chars, residual 'Orion' mentions: {len(left)} {left[:3]}")

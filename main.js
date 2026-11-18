@@ -177,6 +177,7 @@
     e.preventDefault();
     var y = el.getBoundingClientRect().top + window.scrollY - 64;
     window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+    if (a.classList.contains('skip')) { el.focus({ preventScroll: true }); } // skip link must move keyboard focus (ruling 2026-11-18)
   });
 
   /* ---------- reveal ---------- */

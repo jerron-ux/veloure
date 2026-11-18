@@ -115,7 +115,7 @@
     if (openId && openId !== id) { var prev = modal(openId); prev.hidden = true; prev.classList.remove('on'); }
     openId = id; lastFocus = document.activeElement;
     m.hidden = false; requestAnimationFrame(function () { m.classList.add('on'); });
-    html.classList.add('modal-open');
+    html.classList.add('modal-open'); setInert(true);
     var f = m.querySelector('.m-close'); if (f) f.focus({ preventScroll: true });
     if (opts && opts.panel) { var tab = document.getElementById('tab-' + opts.panel); if (tab) tab.click(); }
     document.dispatchEvent(new CustomEvent('veloure:modal', { detail: { id: id } }));
@@ -124,10 +124,19 @@
   function closeModal() {
     if (!openId) return; var m = modal(openId); openId = null;
     m.classList.remove('on'); setTimeout(function () { m.hidden = true; }, 420);
-    html.classList.remove('modal-open');
+    html.classList.remove('modal-open'); setInert(false);
     if (location.hash === '#contact' || location.hash === '#apply' || location.hash === '#path') history.replaceState(null, '', location.pathname + location.search);
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
+  /* keyboard: keep Tab inside the open dialog; page behind is inert (ruling 2026-11-18) */
+  function setInert(on) { ['nav', 'top', 'previewBadge'].forEach(function (id) { var el = document.getElementById(id); if (el) { try { el.inert = on; } catch (e) {} if (on) el.setAttribute('aria-hidden', 'true'); else el.removeAttribute('aria-hidden'); } }); }
+  function focusables(root) { return [].slice.call(root.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(function (el) { return el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement; }); }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !openId) return; var m = modal(openId), f = focusables(m); if (!f.length) return;
+    var first = f[0], last = f[f.length - 1], a = document.activeElement;
+    if (e.shiftKey && (a === first || !m.contains(a))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (a === last || !m.contains(a))) { e.preventDefault(); first.focus(); }
+  });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openId) closeModal(); });
   document.addEventListener('click', function (e) {
     var t = e.target;

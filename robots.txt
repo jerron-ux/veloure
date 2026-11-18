@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /reference/
+Disallow: /screens/
+Disallow: /tools/
+
+Sitemap: https://velourefunding.com/sitemap.xml

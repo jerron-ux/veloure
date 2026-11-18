@@ -389,7 +389,7 @@ import * as THREE from './vendor/three.module.min.js';
   function loop() {
     if (!running) return;
     requestAnimationFrame(loop);
-    const dt = Math.min(0.05, clock.getDelta()), t = clock.elapsedTime;
+    const dt = Math.min(0.05, clock.getDelta()), t = reduce ? 0 : clock.elapsedTime, adt = reduce ? 0 : dt; // reduce-motion: idle motion frozen (ruling 2026-11-18)
     const kp = 1 - Math.exp(-dt * 4.5); ptr.x += (ptr.tx - ptr.x) * kp; ptr.y += (ptr.ty - ptr.y) * kp;
     camY += (camYT - camY) * (reduce ? 1 : 1 - Math.exp(-dt * 6.5));
     vel += ((camY - lastY) / Math.max(dt, 0.001) - vel) * 0.1; lastY = camY;
@@ -431,8 +431,8 @@ import * as THREE from './vendor/three.module.min.js';
       c.rotation.y = u.rot.y * (1 - u.hover * 0.6) + Math.cos(t * 0.19 + u.seed) * 0.03 + ptr.x * 0.08 * u.hover;
       c.material.opacity = 0.94 + u.hover * 0.06;
     }
-    for (const d of drifters) { d.rotation.y += dt * (0.18 + (d.userData.spin || 0)); d.rotation.x += dt * 0.07; if (d.userData.bob !== undefined) d.position.y += Math.sin(t * 0.5 + d.userData.bob) * 0.0012; }
-    if (stageTorus) stageTorus.rotation.z += dt * 0.12;
+    for (const d of drifters) { d.rotation.y += adt * (0.18 + (d.userData.spin || 0)); d.rotation.x += adt * 0.07; if (d.userData.bob !== undefined) d.position.y += Math.sin(t * 0.5 + d.userData.bob) * 0.0012; }
+    if (stageTorus) stageTorus.rotation.z += adt * 0.12;
 
     // dust: pointer in world space at z=0 plane; focus follows the camera
     const vw = visW(); tmp.set(ptr.x * vw / 2 + camera.position.x, camY - ptr.y * VIS_H / 2, 0);
