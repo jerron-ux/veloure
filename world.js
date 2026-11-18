@@ -60,16 +60,16 @@ import * as THREE from './vendor/three.module.min.js';
   const ribbonMat = chrome.clone(); ribbonMat.side = THREE.DoubleSide;
   const darkMetal = new THREE.MeshStandardMaterial({ color: 0x0a0d11, metalness: 0.75, roughness: 0.38, envMapIntensity: 0.9 });
 
-  /* ---------- the emblem: chrome ring + shield (the mark itself, as a texture) ---------- */
+  /* ---------- the emblem: chrome ring + the VF mark (assets/mark.svg, 350:248, as a texture) ---------- */
   const RING_R = 0.5;
   const shieldTex = new THREE.Texture(); shieldTex.colorSpace = THREE.SRGBColorSpace;
   const shieldReady = new Promise(res => {
-    const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); c.width = 1024; c.height = 1126; c.getContext('2d').drawImage(img, 0, 0, 1024, 1126); shieldTex.image = c; shieldTex.needsUpdate = true; res(); }; img.onerror = res; img.src = 'assets/mark.svg';
+    const img = new Image(); img.onload = () => { const c = document.createElement('canvas'); c.width = 1024; c.height = 726; c.getContext('2d').drawImage(img, 0, 0, 1024, 726); shieldTex.image = c; shieldTex.needsUpdate = true; res(); }; img.onerror = res; img.src = 'assets/mark.svg';
   });
   function makeEmblem() {
     const g = new THREE.Group();
     g.add(new THREE.Mesh(new THREE.TorusGeometry(RING_R, 0.028, 24, 160), chrome));
-    const sh = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 0.616), new THREE.MeshStandardMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 }));
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), new THREE.MeshStandardMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 }));
     sh.position.z = 0.02; g.add(sh);
     return g;
   }

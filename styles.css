@@ -74,7 +74,7 @@ html.loaded .nav{opacity:1;transform:none}
 .nav::before{content:"";position:absolute;inset:0 0 auto;height:150px;background:linear-gradient(180deg,rgba(3,5,7,.75),rgba(3,5,7,0));pointer-events:none;z-index:-1}
 .nav > *{pointer-events:auto}
 .brand{display:flex;align-items:center;gap:12px;color:var(--white);padding:9px 0}
-.brand svg{width:22px;height:24px;fill:none;stroke:var(--tech);stroke-width:3;stroke-linejoin:round}
+.brand svg{width:37px;height:26px}
 .brand span{font-size:12px;letter-spacing:.42em;text-transform:uppercase;font-weight:700}
 .snd{display:flex;align-items:center;gap:3px;height:42px;padding:0 6px 0 22px;color:var(--tech-dim);transition:color .3s}
 .snd:hover,html.sound-on .snd{color:var(--tech)}

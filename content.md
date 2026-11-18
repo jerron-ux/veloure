@@ -6,7 +6,7 @@ swapped. Lines marked **[PENDING]** depend on answers from Jerron and must not s
 ## Brand
 - Name: **VELOURÉ** (wordmark, Roman serif — brand sheet says "Aston Roman"; Cinzel 500 is the stand-in)
 - Descriptor on the brand board: "MOTOR GROUP" — **[PENDING]** Lovable build dropped it; confirm.
-- Mark: chrome shield, navy glossy face, silver serif V — `assets/mark.svg`
+- Mark: copper/bronze "VF" monogram (doubled V, shared slanted stem, two bars) — `assets/mark.svg`, a vector redraw of the 2026-11-17 brand render (`reference/brand/`, local)
 
 ## Meta
 - Title: `VELOURÉ | Business Funding & Buildout`
