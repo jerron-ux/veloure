@@ -69,11 +69,10 @@ import * as THREE from './vendor/three.module.min.js';
   function makeEmblem() {
     const g = new THREE.Group();
     g.add(new THREE.Mesh(new THREE.TorusGeometry(RING_R, 0.028, 24, 160), chrome));
-    const markMat = new THREE.MeshStandardMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, metalness: 0.55, roughness: 0.42, envMapIntensity: 1.1 });
-    // two faces back to back: a single plane is culled from behind, so the mark vanished for half of every
-    // coin-spin (fix 2026-11-17). The rear face is turned 180 deg, so the VF reads correctly from either side.
-    const front = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), markMat); front.position.z = 0.02; g.add(front);
-    const back = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), markMat); back.position.z = -0.02; back.rotation.y = Math.PI; g.add(back);
+    // one two-sided plate (ruling 2026-11-18): seen from behind, the VF appears mirrored, like a real plate.
+    // Unlit + no tone mapping, so the mark is exactly the nav logo's colour at every angle (it was dark bronze).
+    const markMat = new THREE.MeshBasicMaterial({ map: shieldTex, transparent: true, alphaTest: 0.02, side: THREE.DoubleSide, toneMapped: false });
+    g.add(new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.482), markMat));
     return g;
   }
   const emblem = makeEmblem(); scene.add(emblem);
