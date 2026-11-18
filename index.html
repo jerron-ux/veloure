@@ -21,8 +21,8 @@
 <link rel="preload" href="assets/fonts/chakra-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/sharetech-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="modulepreload" href="vendor/three.module.min.js">
-<link rel="stylesheet" href="tokens.css?v=20261117">
-<link rel="stylesheet" href="styles.css?v=20261117">
+<link rel="stylesheet" href="tokens.css?v=20261118">
+<link rel="stylesheet" href="styles.css?v=20261118">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FinancialService","name":"VELOURÉ","alternateName":"VELOURÉ LLC","url":"https://velourefunding.com/","logo":"https://velourefunding.com/assets/mark.svg","description":"Private capital studio: business funding brokerage and business buildout in the United States.","telephone":"+1-888-984-9555","email":"support@veloure.com","address":{"@type":"PostalAddress","streetAddress":"30 N Gould St #11979","addressLocality":"Sheridan","addressRegion":"WY","postalCode":"82801","addressCountry":"US"},"areaServed":"US"}
 </script>
@@ -45,7 +45,7 @@
 <!-- interface -->
 <nav class="nav ui" id="nav" aria-label="Primary">
   <a class="brand" href="#top" data-scroll="0" aria-label="VELOURÉ — home"><svg viewBox="0 0 350 248" aria-hidden="true"><use href="#vfMark"/></svg><span>VELOURÉ</span></a>
-  <button class="snd" id="sndBtn" type="button" aria-pressed="false"><i></i><i></i><i></i><i></i><span>Sound off</span></button>
+  <button class="snd" id="sndBtn" type="button" aria-pressed="false" aria-label="Ambient sound"><i></i><i></i><i></i><i></i><span>Sound off</span></button>
   <div class="pill-wrap">
     <div class="pill" id="pill">
       <a href="#work" data-scroll="0.08">Work</a><i class="ln" aria-hidden="true"></i>
@@ -63,7 +63,11 @@
 <main id="top">
   <!-- 00 · home -->
   <section class="scene hero" id="hero">
-    <h1 class="sr">VELOURÉ — built for capital. A private capital studio: business funding brokerage and business buildout in the United States.</h1>
+    <div class="over hero-copy on" data-for="hero" data-from="0" data-to="0.75">
+      <h1>Built for capital.</h1>
+      <p>A private capital studio: business funding brokerage and business buildout in the United States.</p>
+      <div class="hero-cta"><a class="btn" href="#contact" data-open="contact">Talk to an advisor <i>-&gt;</i></a><a class="btn ghost" href="#apply" data-open="apply">Start an application</a></div>
+    </div>
     <div class="cue over on" data-for="hero" data-from="0" data-to="0.75" aria-hidden="true"><span>Scroll down</span></div>
   </section>
 
@@ -326,8 +330,8 @@
 
 <div class="badge" id="previewBadge" hidden>Preview</div>
 
-<script type="module" src="world.js?v=20261117"></script>
-<script src="ui.js?v=20261117" defer></script>
-<script src="main.js?v=20261117" defer></script>
+<script type="module" src="world.js?v=20261118"></script>
+<script src="ui.js?v=20261118" defer></script>
+<script src="main.js?v=20261118" defer></script>
 </body>
 </html>

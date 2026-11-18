@@ -41,6 +41,25 @@
      (lead_source: "website") and assigns it to a specialist. It is deliberately the only
      unauthenticated write path into the app, so it validates and rate-limits server-side. */
   function fn(name) { return CONFIG.appOrigin + CONFIG.appFnPath + name; }
+  /* validation (ruling 2026-11-18): a real US phone + a real email, so advisors can call back */
+  var PHONE_RX = /^(\+?1[\s.-]?)?\(?[2-9]\d{2}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+  var EMAIL_RX = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+  function validPhone(s) { return PHONE_RX.test(String(s || '').trim()); }
+  function validEmail(s) { return EMAIL_RX.test(String(s || '').trim()); }
+  function markBad(id, bad) { var el = document.getElementById(id); if (el) el.classList.toggle('bad', !!bad); }
+  /* #2 fallback (ruling 2026-11-18): when the platform does not answer, give people a way to reach us instead of a dead end */
+  function unreachableHtml(what, subject, body) {
+    var tel = CONFIG.phoneDisplay || '(888) 984-9555', telHref = 'tel:+1' + String(tel).replace(/\D/g, '').replace(/^1/, '');
+    var mail = 'mailto:' + CONFIG.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    return '<p class="err">We could not reach our ' + what + ' system right now. Call <a href="' + telHref + '">' + tel + '</a>'
+      + ' or email <a href="' + mail + '">' + CONFIG.email + '</a> — your details are already filled in; we will confirm by hand.</p>';
+  }
+  /* step change inside a dialog: if the new step's top sits under the pinned CLOSE pill, scroll it clear (phones) */
+  function settleModalScroll(bodyEl) {
+    var box = bodyEl && bodyEl.closest ? bodyEl.closest('.m-box') : null; if (!box) return;
+    var want = bodyEl.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop - 76;
+    if (box.scrollTop > want) box.scrollTop = Math.max(0, want);
+  }
   var INTAKE_URL = fn('publicIntake');
   var FALLBACK_CALENDAR_URL = '';
   var BOOKING_SLOTS_URL = fn('bookingSlots');
@@ -130,7 +149,7 @@
       try { if (res && res.ok) window.ocTrack && window.ocTrack('lead_created', { event_id: payload.meta_event_id }); } catch (e) {}
       return res;
     }).catch(function () {
-      return { ok: false, error: 'We could not reach our system. Please call (888) 984-9555.' };
+      return { ok: false, unreachable: true, error: 'We could not reach our system. Please call (888) 984-9555.' };
     });
   }
 
@@ -402,7 +421,8 @@
     catch (e) { return 'your local time'; }
   }
 
-  function renderBook() {
+  function renderBook() { renderBookInner(); settleModalScroll(bookBody); }
+  function renderBookInner() {
     if (FALLBACK_CALENDAR_URL) {
       bookBody.innerHTML = HOST
         + '<iframe class="gcal" src="' + FALLBACK_CALENDAR_URL + '" title="Book a call" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'
@@ -463,8 +483,9 @@
         bk.email = document.getElementById('bk-e').value.trim();
         var e = [];
         if (!bk.name) e.push('your name');
-        if (!bk.email || bk.email.indexOf('@') < 1) e.push('a valid email');
-        if (!bk.phone) e.push('a phone number');
+        if (!validEmail(bk.email)) e.push('a valid email (name@company.com)');
+        if (!validPhone(bk.phone)) e.push('a 10-digit US phone number');
+        markBad('bk-n', !bk.name); markBad('bk-e', !validEmail(bk.email)); markBad('bk-p', !validPhone(bk.phone));
         if (e.length) { document.getElementById('bkErr').innerHTML = '<p class="err">Please add ' + e.join(', ') + '.</p>'; return; }
         if (!document.getElementById('bkTos').checked) {
           document.getElementById('bkErr').innerHTML = '<p class="err">Please accept the Terms of Service and Privacy Policy to continue.</p>'; return;
@@ -501,7 +522,7 @@
             })
             .catch(function () {
               btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = 'Request this time <span class="ar">→</span>';
-              document.getElementById('bkErr').innerHTML = '<p class="err">We could not reach our system. Please call (888) 984-9555.</p>';
+              document.getElementById('bkErr').innerHTML = unreachableHtml('booking', 'Call request — ' + when, 'Name: ' + bk.name + '\nPhone: ' + bk.phone + '\nPreferred time: ' + when + '\n' + (agenda || ''));
             });
           return;
         }
@@ -516,7 +537,7 @@
         }).then(function (res) {
           if (res && res.ok) { bk.step = 3; renderBook(); return; }
           btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = 'Request this time <span class="ar">→</span>';
-          document.getElementById('bkErr').innerHTML = '<p class="err">' + ((res && res.error) || 'Something went wrong. Please call (888) 984-9555.') + '</p>';
+          document.getElementById('bkErr').innerHTML = (res && res.error && !res.unreachable) ? '<p class="err">' + res.error + '</p>' : unreachableHtml('booking', 'Call request — ' + when, 'Name: ' + bk.name + '\nPhone: ' + bk.phone + '\nPreferred time: ' + when + '\n' + (agenda || ''));
         });
       });
       return;
@@ -562,8 +583,9 @@
       }, save: function (d) { d.name = v('a-name'); d.phone = v('a-phone'); d.email = v('a-email'); d.state = v('a-state'); },
       check: function (d) {
         var e = []; if (!d.name) e.push('your name');
-        if (!d.email || d.email.indexOf('@') < 1) e.push('a valid email');
-        if (!d.phone) e.push('a phone number'); return e;
+        if (!validEmail(d.email)) e.push('a valid email (name@company.com)');
+        if (!validPhone(d.phone)) e.push('a 10-digit US phone number');
+        markBad('a-name', !d.name); markBad('a-email', !validEmail(d.email)); markBad('a-phone', !validPhone(d.phone)); return e;
       } },
     { title: 'Your business', hint: 'If you haven\'t started one yet, that\'s completely fine — say so below.', render: function (d) {
         return '<div class="fieldrow">' + TXT('a-bn', 'Business name (or “none yet”)', d.bn)
@@ -604,7 +626,8 @@
   ];
   function v(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
 
-  function renderApp() {
+  function renderApp() { renderAppInner(); settleModalScroll(appBody); }
+  function renderAppInner() {
     var total = APP_STEPS.length + 1;
     appBar.innerHTML = Array.from({ length: total }, function (_, i) { return '<i class="' + (i <= app.step ? 'on' : '') + '"></i>'; }).join('');
     if (app.step < APP_STEPS.length) {
@@ -678,7 +701,7 @@
         }).then(function (res) {
           if (res && res.ok) { app.step++; renderApp(); return; }
           btn.disabled = false; btn.style.opacity = ''; btn.innerHTML = 'Submit application <span class="ar">→</span>';
-          document.getElementById('appErr2').innerHTML = '<p class="err">' + ((res && res.error) || 'Something went wrong. Please call (888) 984-9555.') + '</p>';
+          document.getElementById('appErr2').innerHTML = (res && res.error && !res.unreachable) ? '<p class="err">' + res.error + '</p>' : unreachableHtml('application', 'Consultation request — ' + d.name, 'Name: ' + d.name + '\nPhone: ' + d.phone + '\nState: ' + (d.state || '') + '\nLooking for: ' + (d.services || []).join(', ') + '\nBusiness: ' + (d.bn || '') + '\nAmount: ' + (d.amt || '') + '\nTimeline: ' + (d.when || ''));
         });
       });
       return;
