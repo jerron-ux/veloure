@@ -323,7 +323,7 @@
       const cy = yAt(S.process, 0.5), cx = mobile ? 0 : vw * 0.2;
       stageTorus = pointsCloud(mobile ? 700 : 1800, () => { const u = rnd() * 6.283, v = rnd() * 6.283, R = 1.0, r = 0.14 + rnd() * 0.22; const k = rnd(); const c = k < 0.55 ? [0.94, 0.93, 0.91] : k < 0.85 ? [0.78, 0.79, 0.80] : [0.93, 0.58, 0.32]; return { p: [(R + r * Math.cos(v)) * Math.cos(u), (R + r * Math.cos(v)) * Math.sin(u), r * Math.sin(v)], c }; }, 2.2);
       stageTorus.position.set(cx, cy + 0.15, -1.6); stageTorus.rotation.set(0.35, 0, 0.2); journey.add(stageTorus);
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(12, 6), new THREE.MeshStandardMaterial({ color: 0x05070a, metalness: 0.5, roughness: 0.6, envMapIntensity: 0.45 })); floor.rotation.x = -Math.PI / 2; floor.position.set(cx, cy - 1.5, -3.2); journey.add(floor);
+      // floor removed (ruling 2026-11-18): the dark 12x6 slab under the stage read as a gray platform across the scene.
       for (let k = 0; k < 6; k++) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 4.2, 12), chrome); const a = (k / 6) * 6.283; p.position.set(cx + Math.cos(a) * 2.2, cy + 0.6, -1.6 + Math.sin(a) * 1.4); journey.add(p); }
     }
 
