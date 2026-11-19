@@ -1,46 +1,109 @@
 /* VELOURÉ — brand tokens. Colour source of truth: the VF logo (2026-11-17 brand render, reference/brand/):
-   near-black surfaces, copper accent (mark sampled #CD7323 / #E2AC85 / #884224), neutral white (the VELOURE
-   letters #FAFBFB), steel/silver for chrome. Surfaces/ink were sampled from the 2026-11-07 Lovable build. */
+   copper accent (mark sampled #CD7323 / #E2AC85 / #884224), neutral ink, steel/silver for chrome.
+   Two themes (ruling 2026-11-18): LIGHT is the default for first-time visitors; DARK is the portal app's own palette
+   (app.velourefunding.com :root — canvas #1c1c1c, panels #232323/#2a2a2a, well #171717, ink #ede6d8/#c9c3b7/#a39e93/#7a766d).
+   The theme is html[data-theme="light"|"dark"], set before paint by the inline script in <head> and remembered in
+   localStorage('veloure-theme'). Every colour in styles.css / legal.css / world.js reads these tokens — never hard-code a theme colour. */
 :root {
-  /* surfaces */
-  --bg: #0C0D10;            /* page — Lovable's near-black (sampled #0E0F12 / #090B0B) */
-  --bg-2: #111215;          /* nav bar / raised plates */
-  --bg-3: #16181C;          /* hover surfaces */
-  --plate: rgba(255,255,255,.035);
-  --plate-2: rgba(255,255,255,.06);
-  --rule: rgba(243,245,245,.10);
-  --rule-strong: rgba(243,245,245,.18);
+  /* ---------- LIGHT (default) ---------- */
+  --bg: #F4F1EB;            /* page — warm paper */
+  --bg-2: #ECE8E1;          /* nav bar / raised plates */
+  --bg-3: #E4DFD7;          /* hover surfaces, select options */
+  --bg-rgb: 244,241,235;
+  --on-rgb: 23,18,14;       /* ink as r,g,b — for the alpha overlays (plates, rules, hairlines) */
+  --scrim-rgb: 244,241,235; /* glass panels / scrims are frosted paper on light */
+  --shadow-rgb: 23,18,14;   /* drop shadows and the modal backdrop */
+  --shadow-strong: rgba(23,18,14,.28);
+  --plate: rgba(23,18,14,.04);
+  --plate-2: rgba(23,18,14,.07);
+  --rule: rgba(23,18,14,.12);
+  --rule-strong: rgba(23,18,14,.22);
+  --glass: linear-gradient(160deg, rgba(252,250,246,.94) 0%, rgba(244,241,235,.92) 100%);
+  --glass-edge: rgba(154,85,32,.28);
 
   /* ink */
-  --ink: #F3F5F5;           /* headlines, primary text (Lovable headline #F3F5F5) */
-  --ink-2: #B8B9BC;         /* body / lede (Lovable lede #B8B9BC) */
-  --muted: #8A8C91;         /* labels (Lovable nav links #A5A6A9 / #77787B) */
-  --faint: #5C5E63;         /* placeholders, mount hints */
+  --ink: #17120E;           /* headlines, primary text (16.5:1) */
+  --ink-2: #4A433C;         /* body / lede (8.6:1) */
+  --muted: #6E665E;         /* labels (5.0:1) */
+  --faint: #746B62;         /* placeholders, mount hints (4.6:1) */
+  --white: var(--ink);      /* legacy name used by styles.css for "the text colour" */
 
-  /* accent — the one colour: copper from the VF mark (ruling 2026-11-17; replaced the shield's sky blue) */
-  --accent: #D4823A;        /* orange-copper — lines, borders, glows (mark #CD7323 lifted for screens) */
-  --accent-bright: #F0C39C; /* lit copper edge — highlights on dark */
-  --accent-deep: #884224;   /* dark copper — large fills only */
-  --accent-ink: #2A1507;    /* bronze — text on copper */
-  --accent-rgb: 212,130,58;
-  --accent-line: rgba(212,130,58,.40);
-  --accent-soft: rgba(212,130,58,.10);
+  /* accent — the one colour: copper from the VF mark (ruling 2026-11-17) */
+  --accent: #A85A1B;        /* copper for light — lines, borders, fills (4.5:1 on paper; white text on it 5.1:1) */
+  --accent-bright: #D4823A; /* lit copper edge — glows and gradients */
+  --accent-deep: #7A3C14;   /* dark copper — large fills, strong text */
+  --accent-ink: #FFF7EE;    /* text on copper */
+  --accent-rgb: 168,90,27;
+  --accent-line: rgba(168,90,27,.45);
+  --accent-soft: rgba(168,90,27,.10);
+  --tech: #9A5520;          /* technical labels (5.0:1) — the "lit copper" of the dark theme, deepened for paper */
+  --tech-rgb: 154,85,32;
+  --tech-dim: rgba(154,85,32,.62);
 
   /* metal */
-  --silver: #C9CDD3;
+  --silver: #5F656E;        /* steel text on paper (5.2:1) */
   --silver-2: #8A9099;
-  --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
-  --copper-grad: linear-gradient(100deg, #F0C39C 0%, #CD7323 38%, #E2AC85 62%, #884224 100%);
+  --silver-rgb: 95,101,110;
+  --silver-grad: linear-gradient(100deg, #6B7079 0%, #3E434A 38%, #767C85 62%, #2E3238 100%);
+  --copper-grad: linear-gradient(100deg, #D4823A 0%, #A85A1B 38%, #C8702E 62%, #7A3C14 100%);
 
   /* status */
-  --ok: #7FD3A6;
-  --err: #F08A8A;
+  --ok: #1F7A4A;
+  --err: #B3261E;
+  --err-rgb: 179,38,30;
 
   /* layout */
   --nav-h: 72px;
   --gutter: clamp(20px, 4vw, 64px);
   --max: 1480px;
   --ease: cubic-bezier(.2,.7,.2,1);
+
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  /* ---------- DARK = the portal app's palette ---------- */
+  --bg: #1C1C1C;            /* app canvas */
+  --bg-2: #232323;          /* app panel */
+  --bg-3: #2A2A2A;          /* app panel-2 */
+  --bg-rgb: 28,28,28;
+  --on-rgb: 237,230,216;    /* app ink #ede6d8 as r,g,b — the app's glass/edge overlays are built on it */
+  --scrim-rgb: 20,20,20;
+  --shadow-rgb: 0,0,0;
+  --shadow-strong: rgba(0,0,0,.9);
+  --plate: rgba(237,230,216,.035);
+  --plate-2: rgba(237,230,216,.06);
+  --rule: rgba(237,230,216,.10);     /* app --edge */
+  --rule-strong: rgba(237,230,216,.22); /* app --rule-strong */
+  --glass: linear-gradient(160deg, rgba(35,35,35,.92) 0%, rgba(28,28,28,.88) 100%);
+  --glass-edge: rgba(226,172,133,.2);
+
+  --ink: #EDE6D8;
+  --ink-2: #C9C3B7;
+  --muted: #A39E93;
+  --faint: #7A766D;
+  --white: var(--ink);
+
+  --accent: #D4823A;
+  --accent-bright: #F0C39C;
+  --accent-deep: #884224;
+  --accent-ink: #2A1507;
+  --accent-rgb: 212,130,58;
+  --accent-line: rgba(212,130,58,.40);
+  --accent-soft: rgba(212,130,58,.10);
+  --tech: #E2AC85;
+  --tech-rgb: 226,172,133;
+  --tech-dim: rgba(226,172,133,.55);
+
+  --silver: #C9CDD3;
+  --silver-2: #8A9099;
+  --silver-rgb: 200,208,214;
+  --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
+  --copper-grad: linear-gradient(100deg, #F0C39C 0%, #CD7323 38%, #E2AC85 62%, #884224 100%);
+
+  --ok: #7FD3A6;
+  --err: #F08A8A;
+  --err-rgb: 240,138,138;
 
   color-scheme: dark;
 }

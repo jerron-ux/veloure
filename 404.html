@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page not found | VELOURÉ</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0C0D10">
+<meta name="theme-color" content="#F4F1EB">
+<script>(function(){var t='light';try{t=localStorage.getItem('veloure-theme')==='dark'?'dark':'light'}catch(e){}var h=document.documentElement;h.setAttribute('data-theme',t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',t==='dark'?'#1C1C1C':'#F4F1EB')})();</script>
 <link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -17,7 +18,7 @@
 <div class="bg" aria-hidden="true"></div>
 <nav class="nav" aria-label="Primary">
   <a href="/" class="brand" aria-label="VELOURÉ home"><img class="mark" src="/assets/mark.svg" alt="" width="48" height="34"><span class="wm">VELOURÉ</span></a>
-  <a class="back" href="/">← Back to the site</a>
+  <div class="nav-r"><a class="back" href="/">← Back to the site</a><button class="theme" id="themeBtn" type="button" aria-pressed="false" aria-label="Switch to dark theme"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button></div>
 </nav>
 <main id="main">
   <header class="legal-head">
@@ -33,5 +34,6 @@
 <footer>
   <p class="copy">© 2026 VELOURÉ LLC. All rights reserved.</p>
 </footer>
+<script>(function(){var b=document.getElementById('themeBtn'),h=document.documentElement;if(!b)return;function sync(){var d=h.getAttribute('data-theme')==='dark';b.setAttribute('aria-pressed',d?'true':'false');b.setAttribute('aria-label',d?'Switch to light theme':'Switch to dark theme');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',d?'#1C1C1C':'#F4F1EB')}b.addEventListener('click',function(){var d=h.getAttribute('data-theme')!=='dark';h.setAttribute('data-theme',d?'dark':'light');try{localStorage.setItem('veloure-theme',d?'dark':'light')}catch(e){}sync()});sync()})();</script>
 </body>
 </html>

@@ -13,6 +13,13 @@
   const THREE = await import('./vendor/three.module.min.js'); // loaded here, after the check (the head adds a modulepreload so capable browsers fetch it at once)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mobile = matchMedia('(max-width: 820px)').matches || (('ontouchstart' in window) && innerWidth < 1024);
+  // theme (ruling 2026-11-18): LIGHT is the default; DARK is the portal app's charcoal. Everything painted into a texture reads P.
+  const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
+  const PAL = {
+    dark:  { sky: ['#3A3A3A', '#262626', '#1A1A1A', '#1C1C1C'], env: ['#E8E4DE', '#5E6064', '#1E2124', '#05070a'], card: '#232323', scan: 0.18, vig: 0.42, edge: 'rgba(226,172,133,0.55)', kicker: 'rgba(226,172,133,0.9)', titleA: 'rgba(226,140,70,0.55)', titleB: 'rgba(200,208,214,0.45)', title: '#EDE6D8', open: 'rgba(226,172,133,0.75)', text: '#EDE6D8', splitA: [0.35, 0.8, 1.0], splitB: [1.0, 0.45, 0.7], light: 0 },
+    light: { sky: ['#CFC9BF', '#E4DFD6', '#F1EDE6', '#F4F1EB'], env: ['#FFFFFF', '#D9D4CC', '#8C8780', '#5A554E'], card: '#FBF9F5', scan: 0.05, vig: 0.08, edge: 'rgba(168,90,27,0.6)', kicker: 'rgba(154,85,32,0.95)', titleA: 'rgba(168,90,27,0.45)', titleB: 'rgba(95,101,110,0.35)', title: '#17120E', open: 'rgba(154,85,32,0.9)', text: '#17120E', splitA: [0.2, 0.45, 0.65], splitB: [0.75, 0.35, 0.15], light: 1 }
+  };
+  let P = isDark() ? PAL.dark : PAL.light;
 
   let renderer;
   try {
@@ -33,28 +40,30 @@
   const STEP = VIS_H;                                         // one viewport scrolled = one visible-height travelled
   const visW = () => VIS_H * camera.aspect;
 
-  /* ---------- background: haze at the top, black below ---------- */
-  {
+  /* ---------- background: haze at the top, the page colour below (per theme) ---------- */
+  function paintSky() {
     const c = document.createElement('canvas'); c.width = 16; c.height = 1024;
     const g = c.getContext('2d'); const gr = g.createLinearGradient(0, 0, 0, 1024);
-    gr.addColorStop(0, '#3B4147'); gr.addColorStop(0.16, '#1F2529'); gr.addColorStop(0.42, '#0b0e12'); gr.addColorStop(1, '#040506');
+    gr.addColorStop(0, P.sky[0]); gr.addColorStop(0.16, P.sky[1]); gr.addColorStop(0.42, P.sky[2]); gr.addColorStop(1, P.sky[3]);
     g.fillStyle = gr; g.fillRect(0, 0, 16, 1024);
-    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; scene.background = t;
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; if (scene.background && scene.background.dispose) scene.background.dispose(); scene.background = t;
   }
+  paintSky();
 
-  /* ---------- environment for the chrome: a soft studio with two coloured lamps ---------- */
-  {
+  /* ---------- environment for the chrome: a soft studio with two coloured lamps (per theme) ---------- */
+  function makeEnv() {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
     const gr = g.createLinearGradient(0, 0, 0, 512);
-    gr.addColorStop(0, '#E8E4DE'); gr.addColorStop(0.35, '#5E6064'); gr.addColorStop(0.62, '#1E2124'); gr.addColorStop(1, '#05070a');
+    gr.addColorStop(0, P.env[0]); gr.addColorStop(0.35, P.env[1]); gr.addColorStop(0.62, P.env[2]); gr.addColorStop(1, P.env[3]);
     g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
     const box = (x, y, w, h, col, a) => { const r = g.createLinearGradient(0, y, 0, y + h); r.addColorStop(0, 'rgba(255,255,255,0)'); r.addColorStop(0.5, col); r.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = a; g.fillStyle = r; g.fillRect(x, y, w, h); g.globalAlpha = 1; };
     box(60, 90, 420, 70, '#ffffff', 0.95); box(560, 150, 380, 50, '#ffffff', 0.8); box(200, 250, 700, 40, '#ffffff', 0.5);
     const spot = (x, y, r, col) => { const s = g.createRadialGradient(x, y, 0, x, y, r); s.addColorStop(0, col); s.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = s; g.fillRect(x - r, y - r, r * 2, r * 2); };
     spot(300, 320, 150, 'rgba(226,150,100,0.75)'); spot(800, 300, 170, 'rgba(205,210,216,0.8)'); spot(520, 60, 120, 'rgba(226,172,133,0.9)');
     const tex = new THREE.CanvasTexture(c); tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
-    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose();
+    const pm = new THREE.PMREMGenerator(renderer); if (scene.environment) scene.environment.dispose(); scene.environment = pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose();
   }
+  makeEnv();
 
   const chrome = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 1, roughness: 0.14, envMapIntensity: 1.5, iridescence: 0.55, iridescenceIOR: 1.45, iridescenceThicknessRange: [120, 440], clearcoat: 0.35, clearcoatRoughness: 0.2 });
   const ribbonMat = chrome.clone(); ribbonMat.side = THREE.DoubleSide;
@@ -129,7 +138,7 @@
   /* ---------- text in the world: display type with a scanline glitch ---------- */
   const glitchVS = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`;
   const glitchFS = `
-    uniform sampler2D tMap; uniform float uTime, uGlitch, uOpacity; varying vec2 vUv;
+    uniform sampler2D tMap; uniform float uTime, uGlitch, uOpacity; uniform vec3 uSplitA, uSplitB; varying vec2 vUv;
     float rnd(float x){ return fract(sin(x * 12.9898) * 43758.5453); }
     void main(){
       vec2 uv = vUv;
@@ -141,14 +150,14 @@
       vec4 c = texture2D(tMap, uv);
       float ar = texture2D(tMap, uv + vec2(0.006 * uGlitch * r, 0.0)).a;
       float ab = texture2D(tMap, uv - vec2(0.006 * uGlitch * r, 0.0)).a;
-      vec3 col = c.rgb * scan + vec3(0.35, 0.8, 1.0) * ab * 0.35 * uGlitch + vec3(1.0, 0.45, 0.7) * ar * 0.35 * uGlitch;
+      vec3 col = c.rgb * scan + uSplitA * ab * 0.35 * uGlitch + uSplitB * ar * 0.35 * uGlitch;
       float a = max(c.a, max(ar, ab) * 0.6 * uGlitch) * uOpacity;
       if (a < 0.01) discard;
       gl_FragColor = vec4(col, a);
     }`;
   const textPlanes = [];
   function textPlane(lines, opts) {
-    const o = Object.assign({ size: 150, weight: 700, width: 2048, align: 'left', color: '#F4F4F2', lineHeight: 0.98, family: 'Chakra Petch' }, opts || {});
+    const o = Object.assign({ size: 150, weight: 700, width: 2048, align: 'left', color: P.text, lineHeight: 0.98, family: 'Chakra Petch' }, opts || {});
     const c = document.createElement('canvas'); const g = c.getContext('2d');
     const font = `${o.weight} ${o.size}px "${o.family}", "Share Tech Mono", monospace`;
     g.font = font;
@@ -158,10 +167,10 @@
     const x = o.align === 'left' ? 10 : c.width / 2;
     lines.forEach((l, i) => g.fillText(l, x, o.size * 0.92 + i * o.size * o.lineHeight));
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-    const mat = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tex }, uTime: { value: 0 }, uGlitch: { value: 0.2 }, uOpacity: { value: 1 } }, vertexShader: glitchVS, fragmentShader: glitchFS, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+    const mat = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tex }, uTime: { value: 0 }, uGlitch: { value: 0.2 }, uOpacity: { value: 1 }, uSplitA: { value: new THREE.Vector3(...P.splitA) }, uSplitB: { value: new THREE.Vector3(...P.splitB) } }, vertexShader: glitchVS, fragmentShader: glitchFS, transparent: true, depthWrite: false, side: THREE.DoubleSide });
     const aspect = c.width / c.height;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1 / aspect), mat);
-    m.userData.aspect = aspect; textPlanes.push(m);
+    m.userData.aspect = aspect; m.userData.lines = lines; m.userData.opts = opts; textPlanes.push(m);
     return m;
   }
 
@@ -179,7 +188,7 @@
   let seed = 11; const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   function cardTexture(def, i) {
     const W = 1024, H = 640, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
-    g.fillStyle = '#0C0F11'; g.fillRect(0, 0, W, H);
+    g.fillStyle = P.card; g.fillRect(0, 0, W, H);
     // painterly weather: soft blooms in the card's hue family, silver and a little gold
     for (let k = 0; k < 26; k++) {
       const x = rnd() * W, y = rnd() * H, r = 120 + rnd() * 320;
@@ -191,19 +200,19 @@
     // grain
     const id = g.getImageData(0, 0, W, H), d = id.data; for (let p = 0; p < d.length; p += 16) { const n = (rnd() - 0.5) * 18; d[p] += n; d[p + 1] += n; d[p + 2] += n; } g.putImageData(id, 0, 0);
     // scanlines + vignette
-    g.fillStyle = 'rgba(0,0,0,0.18)'; for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
-    const vg = g.createLinearGradient(0, 0, W, 0); vg.addColorStop(0, 'rgba(0,0,0,0.42)'); vg.addColorStop(0.6, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+    g.fillStyle = `rgba(0,0,0,${P.scan})`; for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
+    const vg = g.createLinearGradient(0, 0, W, 0); vg.addColorStop(0, `rgba(0,0,0,${P.vig})`); vg.addColorStop(0.6, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
     // frame
-    g.strokeStyle = 'rgba(226,172,133,0.55)'; g.lineWidth = 3; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
+    g.strokeStyle = P.edge; g.lineWidth = 3; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
     // type
-    g.textBaseline = 'alphabetic'; g.fillStyle = 'rgba(226,172,133,0.9)'; g.font = '400 24px "Chakra Petch", "Share Tech Mono", monospace';
+    g.textBaseline = 'alphabetic'; g.fillStyle = P.kicker; g.font = '400 24px "Chakra Petch", "Share Tech Mono", monospace';
     g.fillText(`${String(i + 1).padStart(2, '0')}  //  ${def.kicker.toUpperCase()}`, 64, 92);
     const title = def.title.toUpperCase().split(' '); const lines = []; let cur = '';
     g.font = '700 108px "Chakra Petch", "Share Tech Mono", monospace';
     title.forEach(wd => { const t = cur ? cur + ' ' + wd : wd; if (g.measureText(t).width > W - 150 && cur) { lines.push(cur); cur = wd; } else cur = t; }); if (cur) lines.push(cur);
     const baseY = H / 2 + 20 - (lines.length - 1) * 52;
-    lines.forEach((l, k) => { const y = baseY + k * 108; g.fillStyle = 'rgba(226,140,70,0.55)'; g.fillText(l, 60, y); g.fillStyle = 'rgba(200,208,214,0.45)'; g.fillText(l, 68, y + 2); g.fillStyle = '#F4F4F2'; g.fillText(l, 64, y); });
-    g.fillStyle = 'rgba(226,172,133,0.75)'; g.font = '400 22px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 64);
+    lines.forEach((l, k) => { const y = baseY + k * 108; g.fillStyle = P.titleA; g.fillText(l, 60, y); g.fillStyle = P.titleB; g.fillText(l, 68, y + 2); g.fillStyle = P.title; g.fillText(l, 64, y); });
+    g.fillStyle = P.open; g.font = '400 22px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 64);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
     return tex;
   }
@@ -228,15 +237,15 @@
       gl_Position = projectionMatrix * mv;
     }`;
   const dustFS = `
-    uniform float uFade; varying float vBlur; varying vec3 vColor; varying float vAlpha;
+    uniform float uFade, uLight; varying float vBlur; varying vec3 vColor; varying float vAlpha;
     void main(){
       vec2 uv = gl_PointCoord - 0.5; float r = length(uv) * 2.0; if (r > 1.0) discard;
       float core = smoothstep(1.0, 0.0, r);
       float rim = smoothstep(0.7, 1.0, r) * smoothstep(1.0, 0.86, r);
       float a = mix(core, 0.3 * core + rim * 0.55 + 0.16, vBlur);
-      gl_FragColor = vec4(vColor, a * vAlpha * 0.85 * uFade);
+      gl_FragColor = vec4(mix(vColor, vColor * 0.45, uLight), a * vAlpha * mix(0.85, 0.6, uLight) * uFade);
     }`;
-  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 }, uLight: { value: P.light } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: P.light ? THREE.NormalBlending : THREE.AdditiveBlending });
   let dust = null, platMat = null;   // platMat: the platform dust's own material so only it can fade (ruling 2026-11-18)
   function buildDust() {
     const N = mobile ? 900 : 2300; const pos = new Float32Array(N * 3), size = new Float32Array(N), sd = new Float32Array(N), col = new Float32Array(N * 3);
@@ -309,7 +318,7 @@
         const side = i % 2 ? 1 : -1;
         m.position.set(mobile ? side * 0.12 : (side > 0 ? 0.95 + rnd() * 0.9 : -0.35 + rnd() * 0.5) * (vw / 5.95), yAt(S.work, f) + (rnd() - 0.5) * 0.2, -0.6 - rnd() * 1.2);
         m.rotation.set((rnd() - 0.5) * 0.3, side * (0.2 + rnd() * 0.3) * -1, (rnd() - 0.5) * 0.08);
-        m.userData = { card: def.id, base: m.position.clone(), rot: m.rotation.clone(), seed: rnd() * 10, hover: 0 };
+        m.userData = { card: def.id, def, idx: i, base: m.position.clone(), rot: m.rotation.clone(), seed: rnd() * 10, hover: 0 };
         journey.add(m); cards.push(m);
       });
       knot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.62, 0.17, 220, 28, 2, 3), chrome);
@@ -382,6 +391,21 @@
   let camY = 0, camYT = 0, vel = 0, lastY = 0, glitch = 0.15;
   function onScroll() { camYT = -(scrollY / Math.max(1, H)) * STEP; }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ---------- theme switch: repaint what is baked, no reload (ruling 2026-11-18) ---------- */
+  function applyTheme() {
+    P = isDark() ? PAL.dark : PAL.light;
+    paintSky(); makeEnv();
+    for (const m of [dustMat, platMat]) if (m) { m.uniforms.uLight.value = P.light; m.blending = P.light ? THREE.NormalBlending : THREE.AdditiveBlending; m.needsUpdate = true; }
+    for (const tp of textPlanes.slice()) {
+      if (!tp.userData.lines) continue;
+      const fresh = textPlane(tp.userData.lines, tp.userData.opts); textPlanes.splice(textPlanes.indexOf(fresh), 1);
+      const old = tp.material.uniforms.tMap.value; tp.material.uniforms.tMap.value = fresh.material.uniforms.tMap.value; old.dispose();
+      tp.material.uniforms.uSplitA.value.set(...P.splitA); tp.material.uniforms.uSplitB.value.set(...P.splitB); fresh.geometry.dispose(); fresh.material.dispose();
+    }
+    for (const c of cards) { if (!c.userData.def) continue; const old = c.material.map; c.material.map = cardTexture(c.userData.def, c.userData.idx); c.material.needsUpdate = true; if (old) old.dispose(); }
+  }
+  addEventListener('veloure:theme', applyTheme);
 
   /* ---------- frame ---------- */
   const clock = new THREE.Clock(); let running = true, readySent = false;
