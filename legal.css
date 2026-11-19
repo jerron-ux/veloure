@@ -64,18 +64,3 @@ footer{max-width:980px;margin:0 auto;padding:0 var(--gutter) 48px}
 }
 /* theme button in the legal nav (ruling 2026-11-18) */
 .nav-r{display:flex;align-items:center;gap:14px}
-/* theme switch: track + sliding knob; the knob carries the current mode's icon, the track shows the other end faintly */
-.theme{position:relative;display:inline-flex;align-items:center;justify-content:center;width:52px;height:38px;padding:0;border:0;background:none;color:var(--muted);cursor:pointer;transition:color .3s}
-.theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.theme .track{position:relative;display:block;width:44px;height:24px;border-radius:12px;border:1px solid rgba(var(--on-rgb),.28);background:rgba(var(--on-rgb),.05);transition:background .35s var(--ease),border-color .35s var(--ease)}
-.theme:hover .track{border-color:var(--accent)}
-.theme .knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .38s var(--ease),background .35s var(--ease)}
-.theme svg{position:absolute;top:50%;width:11px;height:11px;margin-top:-5.5px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s var(--ease),transform .5s var(--ease)}
-.theme .track>.sun{left:6px;opacity:0}.theme .track>.moon{right:6px;opacity:.55}
-.theme .knob svg{left:50%;margin-left:-5.5px;stroke:var(--accent-ink)}
-.theme .knob .moon{opacity:0;transform:rotate(-90deg)}
-html[data-theme="dark"] .theme .track{background:rgba(var(--accent-rgb),.22);border-color:rgba(var(--accent-rgb),.55)}
-html[data-theme="dark"] .theme .knob{transform:translateX(20px);background:var(--ink)}
-html[data-theme="dark"] .theme .knob svg{stroke:var(--bg)}
-html[data-theme="dark"] .theme .knob .sun{opacity:0;transform:rotate(90deg)}html[data-theme="dark"] .theme .knob .moon{opacity:1;transform:none}
-html[data-theme="dark"] .theme .track>.sun{opacity:.55}html[data-theme="dark"] .theme .track>.moon{opacity:0}

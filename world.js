@@ -13,13 +13,8 @@
   const THREE = await import('./vendor/three.module.min.js'); // loaded here, after the check (the head adds a modulepreload so capable browsers fetch it at once)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mobile = matchMedia('(max-width: 820px)').matches || (('ontouchstart' in window) && innerWidth < 1024);
-  // theme (ruling 2026-11-18): LIGHT is the default; DARK is the portal app's charcoal. Everything painted into a texture reads P.
-  const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
-  const PAL = {
-    dark:  { sky: ['#3A3A3A', '#262626', '#1A1A1A', '#1C1C1C'], env: [[0, '#E8E4DE'], [0.35, '#5E6064'], [0.62, '#1E2124'], [1, '#05070a']], card: '#232323', bloomL: [22, 52], bloomS: [35, 70], bloomA: [0.08, 0.24], spots: ['232,230,226', '214,186,120'], grain: 18, scan: 0.18, vig: 0.42, sheen: 0, edge: 'rgba(226,172,133,0.55)', edgeW: 3, hud: 0, kicker: '#E2AC85', titleA: 'rgba(226,140,70,0.55)', titleB: 'rgba(200,208,214,0.45)', title: '#EDE6D8', open: '#E2AC85', text: '#EDE6D8', splitA: [0.35, 0.8, 1.0], splitB: [1.0, 0.45, 0.7], light: 0 },
-    light: { sky: ['#E4E0D9', '#EEEBE5', '#F3F0EA', '#F4F1EB'], env: [[0, '#FFFFFF'], [0.40, '#F3F0EA'], [0.49, '#2E2B28'], [0.56, '#7A746C'], [1, '#D2CCC3']], card: '#FDFCFA', bloomL: [86, 95], bloomS: [18, 38], bloomA: [0.05, 0.12], spots: ['255,255,255', '214,170,120'], grain: 5, scan: 0, vig: 0, sheen: 0.32, edge: 'rgba(168,90,27,0.55)', edgeW: 2, hud: 1, kicker: '#8A4918', titleA: 'rgba(168,90,27,0.30)', titleB: 'rgba(95,101,110,0.22)', title: '#17120E', open: '#8A4918', text: '#17120E', splitA: [0.2, 0.45, 0.65], splitB: [0.75, 0.35, 0.15], light: 1 }
-  };
-  let P = isDark() ? PAL.dark : PAL.light;
+  // the one look (ruling 2026-11-19): the portal app's charcoal palette; everything painted into a texture reads P.
+  const P = { sky: ['#3A3A3A', '#262626', '#1A1A1A', '#1C1C1C'], env: [[0, '#E8E4DE'], [0.35, '#5E6064'], [0.62, '#1E2124'], [1, '#05070a']], card: '#232323', bloomL: [22, 52], bloomS: [35, 70], bloomA: [0.08, 0.24], spots: ['232,230,226', '214,186,120'], grain: 18, scan: 0.18, vig: 0.42, sheen: 0, edge: 'rgba(226,172,133,0.55)', edgeW: 3, hud: 0, kicker: '#E2AC85', titleA: 'rgba(226,140,70,0.55)', titleB: 'rgba(200,208,214,0.45)', title: '#EDE6D8', open: '#E2AC85', text: '#EDE6D8', splitA: [0.35, 0.8, 1.0], splitB: [1.0, 0.45, 0.7] };
 
   let renderer;
   try {
@@ -40,17 +35,17 @@
   const STEP = VIS_H;                                         // one viewport scrolled = one visible-height travelled
   const visW = () => VIS_H * camera.aspect;
 
-  /* ---------- background: haze at the top, the page colour below (per theme) ---------- */
+  /* ---------- background: haze at the top, the page colour below  ---------- */
   function paintSky() {
     const c = document.createElement('canvas'); c.width = 16; c.height = 1024;
     const g = c.getContext('2d'); const gr = g.createLinearGradient(0, 0, 0, 1024);
     gr.addColorStop(0, P.sky[0]); gr.addColorStop(0.16, P.sky[1]); gr.addColorStop(0.42, P.sky[2]); gr.addColorStop(1, P.sky[3]);
     g.fillStyle = gr; g.fillRect(0, 0, 16, 1024);
-    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; if (scene.background && scene.background.dispose) scene.background.dispose(); scene.background = t;
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; scene.background = t;
   }
   paintSky();
 
-  /* ---------- environment for the chrome: a soft studio with two coloured lamps (per theme) ---------- */
+  /* ---------- environment for the chrome: a soft studio with two coloured lamps  ---------- */
   function makeEnv() {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
     const gr = g.createLinearGradient(0, 0, 0, 512);
@@ -61,7 +56,7 @@
     const spot = (x, y, r, col) => { const s = g.createRadialGradient(x, y, 0, x, y, r); s.addColorStop(0, col); s.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = s; g.fillRect(x - r, y - r, r * 2, r * 2); };
     spot(300, 320, 150, 'rgba(226,150,100,0.75)'); spot(800, 300, 170, 'rgba(205,210,216,0.8)'); spot(520, 60, 120, 'rgba(226,172,133,0.9)');
     const tex = new THREE.CanvasTexture(c); tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
-    const pm = new THREE.PMREMGenerator(renderer); if (scene.environment) scene.environment.dispose(); scene.environment = pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose();
+    const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(tex).texture; pm.dispose(); tex.dispose();
   }
   makeEnv();
 
@@ -170,7 +165,7 @@
     const mat = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tex }, uTime: { value: 0 }, uGlitch: { value: 0.2 }, uOpacity: { value: 1 }, uSplitA: { value: new THREE.Vector3(...P.splitA) }, uSplitB: { value: new THREE.Vector3(...P.splitB) } }, vertexShader: glitchVS, fragmentShader: glitchFS, transparent: true, depthWrite: false, side: THREE.DoubleSide });
     const aspect = c.width / c.height;
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1 / aspect), mat);
-    m.userData.aspect = aspect; m.userData.lines = lines; m.userData.opts = opts; textPlanes.push(m);
+    m.userData.aspect = aspect; textPlanes.push(m);
     return m;
   }
 
@@ -243,17 +238,15 @@
       gl_Position = projectionMatrix * mv;
     }`;
   const dustFS = `
-    uniform float uFade, uLight; varying float vBlur; varying vec3 vColor; varying float vAlpha;
+    uniform float uFade; varying float vBlur; varying vec3 vColor; varying float vAlpha;
     void main(){
       vec2 uv = gl_PointCoord - 0.5; float r = length(uv) * 2.0; if (r > 1.0) discard;
       float core = smoothstep(1.0, 0.0, r);
       float rim = smoothstep(0.7, 1.0, r) * smoothstep(1.0, 0.86, r);
       float a = mix(core, 0.3 * core + rim * 0.55 + 0.16, vBlur);
-      vec3 cl = mix(vec3(0.44, 0.41, 0.38), vec3(0.70, 0.40, 0.17), clamp((vColor.r - vColor.b) * 2.5, 0.0, 1.0));   // light theme: warm graphite, copper for the warm motes
-      float aL = mix(core, core * 0.4 + 0.05, vBlur);                                                        // out-of-focus = soft filled disc, never a dark ring
-      gl_FragColor = vec4(mix(vColor, cl, uLight), mix(a * 0.85, aL * 0.62, uLight) * vAlpha * uFade);
+      gl_FragColor = vec4(vColor, a * vAlpha * 0.85 * uFade);
     }`;
-  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 }, uLight: { value: P.light } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: P.light ? THREE.NormalBlending : THREE.AdditiveBlending });
+  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
   let dust = null, platMat = null;   // platMat: the platform dust's own material so only it can fade (ruling 2026-11-18)
   function buildDust() {
     const N = mobile ? 900 : 2300; const pos = new Float32Array(N * 3), size = new Float32Array(N), sd = new Float32Array(N), col = new Float32Array(N * 3);
@@ -326,7 +319,7 @@
         const side = i % 2 ? 1 : -1;
         m.position.set(mobile ? side * 0.12 : (side > 0 ? 0.95 + rnd() * 0.9 : -0.35 + rnd() * 0.5) * (vw / 5.95), yAt(S.work, f) + (rnd() - 0.5) * 0.2, -0.6 - rnd() * 1.2);
         m.rotation.set((rnd() - 0.5) * 0.3, side * (0.2 + rnd() * 0.3) * -1, (rnd() - 0.5) * 0.08);
-        m.userData = { card: def.id, def, idx: i, base: m.position.clone(), rot: m.rotation.clone(), seed: rnd() * 10, hover: 0 };
+        m.userData = { card: def.id, base: m.position.clone(), rot: m.rotation.clone(), seed: rnd() * 10, hover: 0 };
         journey.add(m); cards.push(m);
       });
       knot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.62, 0.17, 220, 28, 2, 3), chrome);
@@ -400,20 +393,6 @@
   function onScroll() { camYT = -(scrollY / Math.max(1, H)) * STEP; }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  /* ---------- theme switch: repaint what is baked, no reload (ruling 2026-11-18) ---------- */
-  function applyTheme() {
-    P = isDark() ? PAL.dark : PAL.light;
-    paintSky(); makeEnv();
-    for (const m of [dustMat, platMat]) if (m) { m.uniforms.uLight.value = P.light; m.blending = P.light ? THREE.NormalBlending : THREE.AdditiveBlending; m.needsUpdate = true; }
-    for (const tp of textPlanes.slice()) {
-      if (!tp.userData.lines) continue;
-      const fresh = textPlane(tp.userData.lines, tp.userData.opts); textPlanes.splice(textPlanes.indexOf(fresh), 1);
-      const old = tp.material.uniforms.tMap.value; tp.material.uniforms.tMap.value = fresh.material.uniforms.tMap.value; old.dispose();
-      tp.material.uniforms.uSplitA.value.set(...P.splitA); tp.material.uniforms.uSplitB.value.set(...P.splitB); fresh.geometry.dispose(); fresh.material.dispose();
-    }
-    for (const c of cards) { if (!c.userData.def) continue; const old = c.material.map; c.material.map = cardTexture(c.userData.def, c.userData.idx); c.material.needsUpdate = true; if (old) old.dispose(); }
-  }
-  addEventListener('veloure:theme', applyTheme);
 
   /* ---------- frame ---------- */
   const clock = new THREE.Clock(); let running = true, readySent = false;

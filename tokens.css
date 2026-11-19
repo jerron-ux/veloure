@@ -1,11 +1,8 @@
 /* VELOURÉ — brand tokens. Colour source of truth: the VF logo (2026-11-17 brand render, reference/brand/):
    copper accent (mark sampled #CD7323 / #E2AC85 / #884224), neutral ink, steel/silver for chrome.
-   Two themes (ruling 2026-11-18): LIGHT is the default for first-time visitors; DARK is the portal app's own palette
-   (app.velourefunding.com :root — canvas #1c1c1c, panels #232323/#2a2a2a, well #171717, ink #ede6d8/#c9c3b7/#a39e93/#7a766d).
-   The theme is html[data-theme="light"|"dark"], set before paint by the inline script in <head> and remembered in
-   localStorage('veloure-theme'). Every colour in styles.css / legal.css / world.js reads these tokens — never hard-code a theme colour. */
+   One look (ruling 2026-11-19): the portal app's charcoal palette (app.velourefunding.com :root — canvas #1c1c1c,
+   panels #232323/#2a2a2a, ink #ede6d8/#c9c3b7). Every colour in styles.css / legal.css / world.js reads these tokens. */
 :root {
-  /* ---------- DARK = the portal app's palette ---------- */
   --bg: #1C1C1C;            /* app canvas */
   --bg-2: #232323;          /* app panel */
   --bg-3: #2A2A2A;          /* app panel-2 */
@@ -50,62 +47,4 @@
   --err-rgb: 240,138,138;
 
   color-scheme: dark;
-}
-
-html[data-theme="light"] {
-  /* ---------- LIGHT (default) ---------- */
-  --bg: #F4F1EB;            /* page — warm paper */
-  --bg-2: #ECE8E1;          /* nav bar / raised plates */
-  --bg-3: #E4DFD7;          /* hover surfaces, select options */
-  --bg-rgb: 244,241,235;
-  --cursor-rgb: 255,255,255; /* cursor is difference-blended: white reads dark on paper, light on dark text */
-  --on-rgb: 23,18,14;       /* ink as r,g,b — for the alpha overlays (plates, rules, hairlines) */
-  --scrim-rgb: 244,241,235; /* glass panels / scrims are frosted paper on light */
-  --shadow-rgb: 23,18,14;   /* drop shadows and the modal backdrop */
-  --shadow-strong: rgba(23,18,14,.28);
-  --plate: rgba(23,18,14,.04);
-  --plate-2: rgba(23,18,14,.07);
-  --rule: rgba(23,18,14,.12);
-  --rule-strong: rgba(23,18,14,.22);
-  --glass: linear-gradient(160deg, rgba(252,250,246,.94) 0%, rgba(244,241,235,.92) 100%);
-  --glass-edge: rgba(154,85,32,.28);
-
-  /* ink */
-  --ink: #17120E;           /* headlines, primary text (16.5:1) */
-  --ink-2: #4A433C;         /* body / lede (8.6:1) */
-  --muted: #615951;         /* labels (5.0:1) */
-  --faint: #655C53;         /* placeholders, mount hints (4.6:1) */
-  --white: var(--ink);      /* legacy name used by styles.css for "the text colour" */
-
-  /* accent — the one colour: copper from the VF mark (ruling 2026-11-17) */
-  --accent: #A85A1B;        /* copper for light — lines, borders, fills (4.5:1 on paper; white text on it 5.1:1) */
-  --accent-bright: #D4823A; /* lit copper edge — glows and gradients */
-  --accent-deep: #7A3C14;   /* dark copper — large fills, strong text */
-  --accent-ink: #FFF7EE;    /* text on copper */
-  --accent-rgb: 168,90,27;
-  --accent-line: rgba(168,90,27,.45);
-  --accent-soft: rgba(168,90,27,.10);
-  --tech: #8A4918;          /* technical labels (5.0:1) — the "lit copper" of the dark theme, deepened for paper */
-  --tech-rgb: 138,73,24;
-  --tech-dim: #7A5540;       /* idle labels — solid so it still passes 4.5:1 on the sky top */
-
-  /* metal */
-  --silver: #5F656E;        /* steel text on paper (5.2:1) */
-  --silver-2: #8A9099;
-  --silver-rgb: 95,101,110;
-  --silver-grad: linear-gradient(100deg, #6B7079 0%, #3E434A 38%, #767C85 62%, #2E3238 100%);
-  --copper-grad: linear-gradient(100deg, #D4823A 0%, #A85A1B 38%, #C8702E 62%, #7A3C14 100%);
-
-  /* status */
-  --ok: #1F7A4A;
-  --err: #B3261E;
-  --err-rgb: 179,38,30;
-
-  /* layout */
-  --nav-h: 72px;
-  --gutter: clamp(20px, 4vw, 64px);
-  --max: 1480px;
-  --ease: cubic-bezier(.2,.7,.2,1);
-
-  color-scheme: light;
 }

@@ -107,20 +107,6 @@
   }
   document.addEventListener('visibilitychange', function () { if (document.hidden && on) setSound(false); });
 
-  /* ---------- theme: light by default, dark on request, remembered per device (ruling 2026-11-18) ---------- */
-  var themeBtn = document.getElementById('themeBtn');
-  function syncTheme() {
-    var dark = html.getAttribute('data-theme') === 'dark';
-    if (themeBtn) { themeBtn.setAttribute('aria-checked', dark ? 'true' : 'false'); }
-    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', dark ? '#1C1C1C' : '#F4F1EB');
-  }
-  if (themeBtn) themeBtn.addEventListener('click', function () {
-    var dark = html.getAttribute('data-theme') !== 'dark';
-    html.setAttribute('data-theme', dark ? 'dark' : 'light');
-    try { localStorage.setItem('veloure-theme', dark ? 'dark' : 'light'); } catch (e) {}
-    syncTheme(); window.dispatchEvent(new CustomEvent('veloure:theme', { detail: { dark: dark } }));
-  });
-  syncTheme();
 
   /* ---------- modals ---------- */
   var openId = null, lastFocus = null;
