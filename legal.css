@@ -20,7 +20,7 @@ a:hover{text-decoration-color:var(--accent)}
 .nav .back{font-family:var(--sans);font-weight:500;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .nav .back:hover{color:var(--ink)}
 main{max-width:980px;margin:0 auto;padding:40px var(--gutter) 80px}
-.lab{font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.lab{font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--tech)}
 .legal-head h1{font-family:var(--serif);font-weight:300;font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.01em;margin:14px 0 28px}
 .meta-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0 0 56px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .meta-row > div{padding:18px 20px 18px 0}
@@ -36,7 +36,7 @@ main{max-width:980px;margin:0 auto;padding:40px var(--gutter) 80px}
 .legal li{margin-bottom:8px}
 .legal strong,.legal b{font-weight:500;color:var(--ink)}
 .legal em{font-style:italic;color:var(--ink)}
-.legal code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--accent-bright);background:rgba(var(--on-rgb),.05);padding:2px 6px;border-radius:3px}
+.legal code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--tech);background:rgba(var(--on-rgb),.05);padding:2px 6px;border-radius:3px}
 .legal blockquote{margin:16px 0 20px;padding:18px 22px;border-left:2px solid var(--accent);background:rgba(var(--on-rgb),.03);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.5}
 .legal .glance,.legal .card{background:linear-gradient(180deg,var(--bg-2),var(--bg));border:1px solid rgba(var(--on-rgb),.08);border-top-color:rgba(var(--on-rgb),.16);border-radius:6px;padding:26px 28px;margin:0 0 28px}
 .legal .glance h2{border:0;margin:0 0 12px;padding:0;font-size:22px}
@@ -64,7 +64,18 @@ footer{max-width:980px;margin:0 auto;padding:0 var(--gutter) 48px}
 }
 /* theme button in the legal nav (ruling 2026-11-18) */
 .nav-r{display:flex;align-items:center;gap:14px}
-.theme{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:0;background:none;color:var(--muted);cursor:pointer;transition:color .3s}
-.theme:hover{color:var(--accent)}.theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.theme svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.theme .sun{display:none}html[data-theme="dark"] .theme .sun{display:block}html[data-theme="dark"] .theme .moon{display:none}
+/* theme switch: track + sliding knob; the knob carries the current mode's icon, the track shows the other end faintly */
+.theme{position:relative;display:inline-flex;align-items:center;justify-content:center;width:52px;height:38px;padding:0;border:0;background:none;color:var(--muted);cursor:pointer;transition:color .3s}
+.theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.theme .track{position:relative;display:block;width:44px;height:24px;border-radius:12px;border:1px solid rgba(var(--on-rgb),.28);background:rgba(var(--on-rgb),.05);transition:background .35s var(--ease),border-color .35s var(--ease)}
+.theme:hover .track{border-color:var(--accent)}
+.theme .knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .38s var(--ease),background .35s var(--ease)}
+.theme svg{position:absolute;top:50%;width:11px;height:11px;margin-top:-5.5px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s var(--ease),transform .5s var(--ease)}
+.theme .track>.sun{left:6px;opacity:0}.theme .track>.moon{right:6px;opacity:.55}
+.theme .knob svg{left:50%;margin-left:-5.5px;stroke:var(--accent-ink)}
+.theme .knob .moon{opacity:0;transform:rotate(-90deg)}
+html[data-theme="dark"] .theme .track{background:rgba(var(--accent-rgb),.22);border-color:rgba(var(--accent-rgb),.55)}
+html[data-theme="dark"] .theme .knob{transform:translateX(20px);background:var(--ink)}
+html[data-theme="dark"] .theme .knob svg{stroke:var(--bg)}
+html[data-theme="dark"] .theme .knob .sun{opacity:0;transform:rotate(90deg)}html[data-theme="dark"] .theme .knob .moon{opacity:1;transform:none}
+html[data-theme="dark"] .theme .track>.sun{opacity:.55}html[data-theme="dark"] .theme .track>.moon{opacity:0}

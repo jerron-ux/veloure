@@ -5,6 +5,54 @@
    The theme is html[data-theme="light"|"dark"], set before paint by the inline script in <head> and remembered in
    localStorage('veloure-theme'). Every colour in styles.css / legal.css / world.js reads these tokens — never hard-code a theme colour. */
 :root {
+  /* ---------- DARK = the portal app's palette ---------- */
+  --bg: #1C1C1C;            /* app canvas */
+  --bg-2: #232323;          /* app panel */
+  --bg-3: #2A2A2A;          /* app panel-2 */
+  --bg-rgb: 28,28,28;
+  --cursor-rgb: 237,230,216;
+  --on-rgb: 237,230,216;    /* app ink #ede6d8 as r,g,b — the app's glass/edge overlays are built on it */
+  --scrim-rgb: 20,20,20;
+  --shadow-rgb: 0,0,0;
+  --shadow-strong: rgba(0,0,0,.9);
+  --plate: rgba(237,230,216,.035);
+  --plate-2: rgba(237,230,216,.06);
+  --rule: rgba(237,230,216,.10);     /* app --edge */
+  --rule-strong: rgba(237,230,216,.22); /* app --rule-strong */
+  --glass: linear-gradient(160deg, rgba(35,35,35,.92) 0%, rgba(28,28,28,.88) 100%);
+  --glass-edge: rgba(226,172,133,.2);
+
+  --ink: #EDE6D8;
+  --ink-2: #C9C3B7;
+  --muted: #B0AB9F;
+  --faint: #9E998E;
+  --white: var(--ink);
+
+  --accent: #D4823A;
+  --accent-bright: #F0C39C;
+  --accent-deep: #884224;
+  --accent-ink: #2A1507;
+  --accent-rgb: 212,130,58;
+  --accent-line: rgba(212,130,58,.40);
+  --accent-soft: rgba(212,130,58,.10);
+  --tech: #E2AC85;
+  --tech-rgb: 226,172,133;
+  --tech-dim: #C9A48A;       /* idle labels — solid, 4.9:1 on the sky top */
+
+  --silver: #C9CDD3;
+  --silver-2: #8A9099;
+  --silver-rgb: 200,208,214;
+  --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
+  --copper-grad: linear-gradient(100deg, #F0C39C 0%, #CD7323 38%, #E2AC85 62%, #884224 100%);
+
+  --ok: #7FD3A6;
+  --err: #F08A8A;
+  --err-rgb: 240,138,138;
+
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
   /* ---------- LIGHT (default) ---------- */
   --bg: #F4F1EB;            /* page — warm paper */
   --bg-2: #ECE8E1;          /* nav bar / raised plates */
@@ -25,8 +73,8 @@
   /* ink */
   --ink: #17120E;           /* headlines, primary text (16.5:1) */
   --ink-2: #4A433C;         /* body / lede (8.6:1) */
-  --muted: #6E665E;         /* labels (5.0:1) */
-  --faint: #746B62;         /* placeholders, mount hints (4.6:1) */
+  --muted: #615951;         /* labels (5.0:1) */
+  --faint: #655C53;         /* placeholders, mount hints (4.6:1) */
   --white: var(--ink);      /* legacy name used by styles.css for "the text colour" */
 
   /* accent — the one colour: copper from the VF mark (ruling 2026-11-17) */
@@ -37,9 +85,9 @@
   --accent-rgb: 168,90,27;
   --accent-line: rgba(168,90,27,.45);
   --accent-soft: rgba(168,90,27,.10);
-  --tech: #9A5520;          /* technical labels (5.0:1) — the "lit copper" of the dark theme, deepened for paper */
-  --tech-rgb: 154,85,32;
-  --tech-dim: rgba(154,85,32,.62);
+  --tech: #8A4918;          /* technical labels (5.0:1) — the "lit copper" of the dark theme, deepened for paper */
+  --tech-rgb: 138,73,24;
+  --tech-dim: #7A5540;       /* idle labels — solid so it still passes 4.5:1 on the sky top */
 
   /* metal */
   --silver: #5F656E;        /* steel text on paper (5.2:1) */
@@ -60,52 +108,4 @@
   --ease: cubic-bezier(.2,.7,.2,1);
 
   color-scheme: light;
-}
-
-html[data-theme="dark"] {
-  /* ---------- DARK = the portal app's palette ---------- */
-  --bg: #1C1C1C;            /* app canvas */
-  --bg-2: #232323;          /* app panel */
-  --bg-3: #2A2A2A;          /* app panel-2 */
-  --bg-rgb: 28,28,28;
-  --cursor-rgb: 237,230,216;
-  --on-rgb: 237,230,216;    /* app ink #ede6d8 as r,g,b — the app's glass/edge overlays are built on it */
-  --scrim-rgb: 20,20,20;
-  --shadow-rgb: 0,0,0;
-  --shadow-strong: rgba(0,0,0,.9);
-  --plate: rgba(237,230,216,.035);
-  --plate-2: rgba(237,230,216,.06);
-  --rule: rgba(237,230,216,.10);     /* app --edge */
-  --rule-strong: rgba(237,230,216,.22); /* app --rule-strong */
-  --glass: linear-gradient(160deg, rgba(35,35,35,.92) 0%, rgba(28,28,28,.88) 100%);
-  --glass-edge: rgba(226,172,133,.2);
-
-  --ink: #EDE6D8;
-  --ink-2: #C9C3B7;
-  --muted: #A39E93;
-  --faint: #7A766D;
-  --white: var(--ink);
-
-  --accent: #D4823A;
-  --accent-bright: #F0C39C;
-  --accent-deep: #884224;
-  --accent-ink: #2A1507;
-  --accent-rgb: 212,130,58;
-  --accent-line: rgba(212,130,58,.40);
-  --accent-soft: rgba(212,130,58,.10);
-  --tech: #E2AC85;
-  --tech-rgb: 226,172,133;
-  --tech-dim: rgba(226,172,133,.55);
-
-  --silver: #C9CDD3;
-  --silver-2: #8A9099;
-  --silver-rgb: 200,208,214;
-  --silver-grad: linear-gradient(100deg, #F4F5F7 0%, #AEB4BD 38%, #F0F1F3 62%, #8A9099 100%);
-  --copper-grad: linear-gradient(100deg, #F0C39C 0%, #CD7323 38%, #E2AC85 62%, #884224 100%);
-
-  --ok: #7FD3A6;
-  --err: #F08A8A;
-  --err-rgb: 240,138,138;
-
-  color-scheme: dark;
 }

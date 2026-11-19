@@ -16,8 +16,8 @@
   // theme (ruling 2026-11-18): LIGHT is the default; DARK is the portal app's charcoal. Everything painted into a texture reads P.
   const isDark = () => document.documentElement.getAttribute('data-theme') === 'dark';
   const PAL = {
-    dark:  { sky: ['#3A3A3A', '#262626', '#1A1A1A', '#1C1C1C'], env: ['#E8E4DE', '#5E6064', '#1E2124', '#05070a'], card: '#232323', scan: 0.18, vig: 0.42, edge: 'rgba(226,172,133,0.55)', kicker: 'rgba(226,172,133,0.9)', titleA: 'rgba(226,140,70,0.55)', titleB: 'rgba(200,208,214,0.45)', title: '#EDE6D8', open: 'rgba(226,172,133,0.75)', text: '#EDE6D8', splitA: [0.35, 0.8, 1.0], splitB: [1.0, 0.45, 0.7], light: 0 },
-    light: { sky: ['#CFC9BF', '#E4DFD6', '#F1EDE6', '#F4F1EB'], env: ['#FFFFFF', '#D9D4CC', '#8C8780', '#5A554E'], card: '#FBF9F5', scan: 0.05, vig: 0.08, edge: 'rgba(168,90,27,0.6)', kicker: 'rgba(154,85,32,0.95)', titleA: 'rgba(168,90,27,0.45)', titleB: 'rgba(95,101,110,0.35)', title: '#17120E', open: 'rgba(154,85,32,0.9)', text: '#17120E', splitA: [0.2, 0.45, 0.65], splitB: [0.75, 0.35, 0.15], light: 1 }
+    dark:  { sky: ['#3A3A3A', '#262626', '#1A1A1A', '#1C1C1C'], env: [[0, '#E8E4DE'], [0.35, '#5E6064'], [0.62, '#1E2124'], [1, '#05070a']], card: '#232323', bloomL: [22, 52], bloomS: [35, 70], bloomA: [0.08, 0.24], spots: ['232,230,226', '214,186,120'], grain: 18, scan: 0.18, vig: 0.42, sheen: 0, edge: 'rgba(226,172,133,0.55)', edgeW: 3, hud: 0, kicker: '#E2AC85', titleA: 'rgba(226,140,70,0.55)', titleB: 'rgba(200,208,214,0.45)', title: '#EDE6D8', open: '#E2AC85', text: '#EDE6D8', splitA: [0.35, 0.8, 1.0], splitB: [1.0, 0.45, 0.7], light: 0 },
+    light: { sky: ['#E4E0D9', '#EEEBE5', '#F3F0EA', '#F4F1EB'], env: [[0, '#FFFFFF'], [0.40, '#F3F0EA'], [0.49, '#2E2B28'], [0.56, '#7A746C'], [1, '#D2CCC3']], card: '#FDFCFA', bloomL: [86, 95], bloomS: [18, 38], bloomA: [0.05, 0.12], spots: ['255,255,255', '214,170,120'], grain: 5, scan: 0, vig: 0, sheen: 0.32, edge: 'rgba(168,90,27,0.55)', edgeW: 2, hud: 1, kicker: '#8A4918', titleA: 'rgba(168,90,27,0.30)', titleB: 'rgba(95,101,110,0.22)', title: '#17120E', open: '#8A4918', text: '#17120E', splitA: [0.2, 0.45, 0.65], splitB: [0.75, 0.35, 0.15], light: 1 }
   };
   let P = isDark() ? PAL.dark : PAL.light;
 
@@ -54,7 +54,7 @@
   function makeEnv() {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
     const gr = g.createLinearGradient(0, 0, 0, 512);
-    gr.addColorStop(0, P.env[0]); gr.addColorStop(0.35, P.env[1]); gr.addColorStop(0.62, P.env[2]); gr.addColorStop(1, P.env[3]);
+    for (const [st, col] of P.env) gr.addColorStop(st, col);
     g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
     const box = (x, y, w, h, col, a) => { const r = g.createLinearGradient(0, y, 0, y + h); r.addColorStop(0, 'rgba(255,255,255,0)'); r.addColorStop(0.5, col); r.addColorStop(1, 'rgba(255,255,255,0)'); g.globalAlpha = a; g.fillStyle = r; g.fillRect(x, y, w, h); g.globalAlpha = 1; };
     box(60, 90, 420, 70, '#ffffff', 0.95); box(560, 150, 380, 50, '#ffffff', 0.8); box(200, 250, 700, 40, '#ffffff', 0.5);
@@ -192,27 +192,33 @@
     // painterly weather: soft blooms in the card's hue family, silver and a little gold
     for (let k = 0; k < 26; k++) {
       const x = rnd() * W, y = rnd() * H, r = 120 + rnd() * 320;
-      const h = def.hue + (rnd() - 0.5) * 60, sat = 35 + rnd() * 35, lig = 22 + rnd() * 30, a = 0.08 + rnd() * 0.16;
+      const h = def.hue + (rnd() - 0.5) * 60, sat = P.bloomS[0] + rnd() * (P.bloomS[1] - P.bloomS[0]), lig = P.bloomL[0] + rnd() * (P.bloomL[1] - P.bloomL[0]), a = P.bloomA[0] + rnd() * (P.bloomA[1] - P.bloomA[0]);
       const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `hsla(${h},${sat}%,${lig}%,${a})`); gr.addColorStop(1, 'hsla(0,0%,0%,0)');
       g.fillStyle = gr; g.fillRect(0, 0, W, H);
     }
-    for (let k = 0; k < 7; k++) { const x = rnd() * W, y = rnd() * H, r = 60 + rnd() * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${k % 3 ? '232,230,226' : '214,186,120'},${0.08 + rnd() * 0.1})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+    for (let k = 0; k < 7; k++) { const x = rnd() * W, y = rnd() * H, r = 60 + rnd() * 160; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${k % 3 ? P.spots[0] : P.spots[1]},${0.08 + rnd() * 0.1})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
     // grain
-    const id = g.getImageData(0, 0, W, H), d = id.data; for (let p = 0; p < d.length; p += 16) { const n = (rnd() - 0.5) * 18; d[p] += n; d[p + 1] += n; d[p + 2] += n; } g.putImageData(id, 0, 0);
+    const id = g.getImageData(0, 0, W, H), d = id.data; for (let p = 0; p < d.length; p += 16) { const n = (rnd() - 0.5) * P.grain; d[p] += n; d[p + 1] += n; d[p + 2] += n; } g.putImageData(id, 0, 0);
     // scanlines + vignette
-    g.fillStyle = `rgba(0,0,0,${P.scan})`; for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
-    const vg = g.createLinearGradient(0, 0, W, 0); vg.addColorStop(0, `rgba(0,0,0,${P.vig})`); vg.addColorStop(0.6, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+    if (P.scan > 0) { g.fillStyle = `rgba(0,0,0,${P.scan})`; for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2); }
+    if (P.vig > 0) { const vg = g.createLinearGradient(0, 0, W, 0); vg.addColorStop(0, `rgba(0,0,0,${P.vig})`); vg.addColorStop(0.6, 'rgba(0,0,0,0)'); g.fillStyle = vg; g.fillRect(0, 0, W, H); }
+    if (P.sheen > 0) { const sh = g.createLinearGradient(0, 0, W, H); sh.addColorStop(0, `rgba(255,255,255,${P.sheen})`); sh.addColorStop(0.45, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(168,90,27,0.05)'); g.fillStyle = sh; g.fillRect(0, 0, W, H); }   // frosted-glass light sweep (light theme)
     // frame
-    g.strokeStyle = P.edge; g.lineWidth = 3; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
+    g.strokeStyle = P.edge; g.lineWidth = P.edgeW; g.beginPath(); g.roundRect(6, 6, W - 12, H - 12, 34); g.stroke();
+    if (P.hud) {   // light theme: HUD corner ticks + a hairline under the kicker (quiet, technical)
+      g.strokeStyle = P.kicker; g.lineWidth = 2; const t = 26, m = 30;
+      for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) { const x0 = sx > 0 ? m : W - m, y0 = sy > 0 ? m : H - m; g.beginPath(); g.moveTo(x0, y0 + sy * t); g.lineTo(x0, y0); g.lineTo(x0 + sx * t, y0); g.stroke(); }
+      g.fillStyle = 'rgba(168,90,27,0.35)'; g.fillRect(64, 108, 220, 2);
+    }
     // type
-    g.textBaseline = 'alphabetic'; g.fillStyle = P.kicker; g.font = '400 24px "Chakra Petch", "Share Tech Mono", monospace';
+    g.textBaseline = 'alphabetic'; g.fillStyle = P.kicker; g.font = '500 30px "Chakra Petch", "Share Tech Mono", monospace';
     g.fillText(`${String(i + 1).padStart(2, '0')}  //  ${def.kicker.toUpperCase()}`, 64, 92);
     const title = def.title.toUpperCase().split(' '); const lines = []; let cur = '';
     g.font = '700 108px "Chakra Petch", "Share Tech Mono", monospace';
     title.forEach(wd => { const t = cur ? cur + ' ' + wd : wd; if (g.measureText(t).width > W - 150 && cur) { lines.push(cur); cur = wd; } else cur = t; }); if (cur) lines.push(cur);
     const baseY = H / 2 + 20 - (lines.length - 1) * 52;
     lines.forEach((l, k) => { const y = baseY + k * 108; g.fillStyle = P.titleA; g.fillText(l, 60, y); g.fillStyle = P.titleB; g.fillText(l, 68, y + 2); g.fillStyle = P.title; g.fillText(l, 64, y); });
-    g.fillStyle = P.open; g.font = '400 22px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 64);
+    g.fillStyle = P.open; g.font = '500 28px "Chakra Petch", "Share Tech Mono", monospace'; g.fillText('OPEN  ->', 64, H - 60);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
     return tex;
   }
@@ -243,7 +249,9 @@
       float core = smoothstep(1.0, 0.0, r);
       float rim = smoothstep(0.7, 1.0, r) * smoothstep(1.0, 0.86, r);
       float a = mix(core, 0.3 * core + rim * 0.55 + 0.16, vBlur);
-      gl_FragColor = vec4(mix(vColor, vColor * 0.20, uLight), a * vAlpha * mix(0.85, 0.82, uLight) * uFade);   // light theme: darker specks (ruling 2026-11-19, option B)
+      vec3 cl = mix(vec3(0.44, 0.41, 0.38), vec3(0.70, 0.40, 0.17), clamp((vColor.r - vColor.b) * 2.5, 0.0, 1.0));   // light theme: warm graphite, copper for the warm motes
+      float aL = mix(core, core * 0.4 + 0.05, vBlur);                                                        // out-of-focus = soft filled disc, never a dark ring
+      gl_FragColor = vec4(mix(vColor, cl, uLight), mix(a * 0.85, aL * 0.62, uLight) * vAlpha * uFade);
     }`;
   const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 }, uLight: { value: P.light } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: P.light ? THREE.NormalBlending : THREE.AdditiveBlending });
   let dust = null, platMat = null;   // platMat: the platform dust's own material so only it can fade (ruling 2026-11-18)

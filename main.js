@@ -450,7 +450,7 @@
         });
         h += '</div><div class="tz">Times shown in ' + ESC(tzName()) + '.</div>';
       }
-      h += '<div class="btn-row"><button class="btn" id="bkNext"' + (bk.time === null ? ' disabled style="opacity:.45;cursor:not-allowed"' : '') + '>Continue <span class="ar">→</span></button></div>';
+      h += '<div class="btn-row"><button class="btn" id="bkNext"' + (bk.time === null ? ' disabled' : '') + '>Continue <span class="ar">→</span></button></div>';
       bookBody.innerHTML = h;
       bookBody.querySelectorAll('.day').forEach(function (b) { b.addEventListener('click', function () { bk.day = +b.dataset.d; bk.time = null; renderBook(); }); });
       bookBody.querySelectorAll('.slot').forEach(function (b) { b.addEventListener('click', function () { bk.time = +b.dataset.t; renderBook(); }); });
