@@ -1,8 +1,8 @@
 # legal.py — ports the four legal pages from the Orion site to VELOURÉ pages.
 # Source snapshots: reference/legal-src/<slug>.html (fetched 2026-11-08). Text is kept verbatim except:
 # entity/brand swapped (Jerron's ruling: VELOURÉ LLC), site-domain mentions → "this website", links made
-# relative, effective date/version reset for the new entity. Phone stays Orion's (same for now); email = support@veloure.com
-# PLACEHOLDER (ruling 2026-11-17, no mailbox yet). Auto-reply quotes on the SMS-consent page are NOT swapped: the shared numbers still send Orion's text.
+# relative, effective date/version reset for the new entity. Phone stays the shared business number (same for now); email = support@veloure.us
+# everywhere (ruling 2026-11-19: one address; mailbox pending the veloure.us registration). SMS auto-replies are DESCRIBED, not quoted (ruling 2026-11-19: no Orion traces).
 # Flagged for counsel/Eric before the real domain goes live.
 # run: uv run python tools/legal.py
 import re, html, pathlib
@@ -14,7 +14,7 @@ EFFECTIVE = "November 08, 2026"
 HOST = (R / "CNAME").read_text(encoding="utf-8").strip()   # canonical host, one source of truth
 
 PAGES = {
-    "privacy-policy": dict(title="Privacy Policy", applies="this website, the client portal at app.orioncapitalfunding.com, and all VELOURÉ services",
+    "privacy-policy": dict(title="Privacy Policy", applies="this website, the client portal at app.velourefunding.com, and all VELOURÉ services",
                            desc="How VELOURÉ LLC collects, uses, shares and protects your information."),
     "terms":          dict(title="Terms of Use", applies="this website and our qualifier / application tools",
                            desc="The terms that cover your use of the VELOURÉ website and application tools."),
@@ -33,9 +33,10 @@ SUBS = [
     ('Orion Capital Funding', 'VELOURÉ'),
     ("Orion Capital's", "VELOURÉ's"),
     ('Orion Capital', 'VELOURÉ'),
-    ('orioncapital-web-consent-v3-2026-11-02', 'veloure-web-consent-v2-2026-11-17'),
+    ('orioncapital-web-consent-v3-2026-11-02', 'veloure-web-consent-v3-2026-11-17'),   # must equal CONSENT_VERSION in main.js
+    ('app.orioncapitalfunding.com', 'app.velourefunding.com'),   # the client portal (ruling 2026-11-19: no Orion traces)
     ('session storage for your day/night display preference and security cookies for the client portal', 'security cookies for the client portal'),  # the site itself stores nothing in the browser (theme removed, ruling 2026-11-19)
-    ('support@orioncapitalfunding.com', 'support@veloure.com'),   # placeholder email (ruling 2026-11-17); quoted auto-replies are held out by `keep` in port()
+    ('support@orioncapitalfunding.com', 'support@veloure.us'),   # one address everywhere (ruling 2026-11-19); must equal the email in main.js / index.html
     # links → relative
     ('href="https://orioncapitalfunding.com/qualify/"', 'href="../#apply"'),
     ('href="/qualify/"', 'href="../#apply"'),
@@ -54,14 +55,20 @@ SUBS = [
     ('orioncapitalfunding.com (the "Site")', 'this website (the "Site")'),
 ]
 
+DESCRIBE = [   # what the SMS-consent page says instead of quoting the auto-replies (rulings 2026-11-19)
+    (r"Auto-reply:\s*<em>(?:“|&ldquo;)You're unsubscribed[^<]*(?:”|&rdquo;)</em>", "You will get one final confirmation text and nothing more."),
+    (r"Auto-reply:\s*<em>(?:“|&ldquo;)You're opted back in[^<]*(?:”|&rdquo;)</em>", "You will get one text confirming you are opted back in."),
+    (r"Auto-reply:\s*<em>(?:“|&ldquo;)Orion\s+Capital Funding:[^<]*(?:”|&rdquo;)</em>", "You will get one text with support contact details (email and phone) and a reminder of how to opt out."),
+]
+
 def port(slug):
     s = (SRC / f"{slug}.html").read_text(encoding="utf-8", errors="replace")
     a = re.search(r"<article[^>]*>(.*?)</article>", s, re.S).group(1)
-    # protect auto-reply quotes (what the shared numbers really send). Source uses &ldquo;/&rdquo; entities and wraps "Orion\nCapital".
-    keep = []
+    # SMS auto-replies: describe what happens instead of quoting the shared number's wording (ruling 2026-11-19: no Orion traces)
     if slug == "sms-consent":
-        def hold(m): keep.append(m.group(0)); return f"@@KEEP{len(keep)-1}@@"
-        a = re.sub(r"<em>(?:“|&ldquo;)(You're|VELOURÉ|Orion\s+Capital Funding:)[^<]*(?:”|&rdquo;)</em>", hold, a)
+        for pat, desc in DESCRIBE:
+            a, n = re.subn(pat, desc, a)
+            if n != 1: raise SystemExit(f"sms-consent: auto-reply pattern matched {n}x: {pat[:60]}")
     for old, new in SUBS: a = a.replace(old, new)
     a = re.sub(r"(?<![@.\w/])orioncapitalfunding\.com", "this website", a)      # bare domain mentions
     a = re.sub(r"tel:\+1[\d*]+", "tel:+18889849555", a)                            # normalise tel links
@@ -71,7 +78,6 @@ def port(slug):
     a = re.sub(r"<img[^>]*>", '<img src="../assets/consent-checkbox.png" alt="The unchecked SMS consent checkbox beside the phone number field on the VELOURÉ booking form, with Privacy Policy and SMS Terms links" loading="lazy">', a)
     a = re.sub(r'<a href="/how-were-paid/"[^>]*>(.*?)</a>', r'', a)                 # page does not exist on VELOURÉ
     a = a.replace('href="/brand/sms-optin-form.png"', 'href="../assets/consent-checkbox.png"').replace('>/brand/sms-optin-form.png<', '>assets/consent-checkbox.png<')
-    for i, k in enumerate(keep): a = a.replace(f"@@KEEP{i}@@", k)
     return a.strip()
 
 TPL = """<!DOCTYPE html>
@@ -126,5 +132,6 @@ for slug, meta in PAGES.items():
     out = R / slug / "index.html"; out.parent.mkdir(exist_ok=True)
     body = port(slug)
     out.write_text(TPL.format(title=meta["title"], desc=meta["desc"], applies=meta["applies"], effective=EFFECTIVE, body=body, canon=f"https://{HOST}/{slug}/"), encoding="utf-8")
-    left = re.findall(r"Orion[^<]{0,40}", body)
-    print(f"{slug}: {len(body):,} chars, residual 'Orion' mentions: {len(left)} {left[:3]}")
+    left = re.findall(r".{0,30}orion.{0,40}", out.read_text(encoding="utf-8"), re.I)
+    if left: raise SystemExit(f"{slug}: Orion trace left in the page: {left[:3]}")
+    print(f"{slug}: {len(body):,} chars, Orion traces: 0")

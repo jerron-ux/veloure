@@ -1,5 +1,5 @@
 /* ==========================================================================
-   main.js — page behaviour + the live wiring carried over from the Orion
+   main.js — page behaviour + the live wiring carried over from the previous
    funnel site (path finder, booking, application, consent, attribution,
    beacons). Business logic is kept verbatim where it matters; only
    presentation hooks and the brand/endpoint CONFIG block changed.
@@ -10,7 +10,7 @@
   "use strict";
 
   /* ================= CONFIG — the only block that carries brand or endpoint values =================
-     Rulings 2026-11-08 (Jerron): entity VELOURÉ LLC · phone same as Orion for now · the app
+     Rulings 2026-11-08 (Jerron): entity VELOURÉ LLC · phone = the shared business line for now · the app
      moves to a new domain (not named yet) — set APP_ORIGIN and SITE_HOSTS when known. */
   var CONFIG = {
     brand: 'VELOURÉ',
@@ -19,7 +19,7 @@
     email: 'support@veloure.us', /* PLACEHOLDER (ruling 2026-11-17): mailbox on veloure.us not created yet */
     /* hostnames on which the forms go live (any subdomain matches). The published staging host is
        veloure.us (custom domain, 2026-11-17; velourefunding.com 301-redirects to it) + jerron-ux.github.io (GitHub Pages origin). */
-    siteHosts: ['veloure.us', 'www.veloure.us', 'velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io', 'orioncapitalfunding.com'],
+    siteHosts: ['veloure.us', 'www.veloure.us', 'velourefunding.com', 'www.velourefunding.com', 'jerron-ux.github.io'],
     /* the platform the forms post to. PENDING: the app's new domain. */
     appOrigin: 'https://app.velourefunding.com',
     appFnPath: '/api/apps/6abd3872a2920c3cae83d45b/functions/'
@@ -108,7 +108,7 @@
 
   // Contact-consent wording shown to the visitor. Version-stamped so the record stored with the lead
   // always says exactly what was agreed to. Bump the version whenever the text changes.
-  // v1 under VELOURÉ LLC (2026-11-08) = orioncapital-web-consent-v3-2026-11-02 clauses, brand/entity swapped.
+  // v1 under VELOURÉ LLC (2026-11-08) = the previous site's consent v3 (2026-11-02) clauses, brand/entity swapped.
   // v2 (2026-11-17): same clauses, contact email → support@veloure.com (placeholder). Eric's OK before live.
   // v3 (2026-11-17): same clauses, contact email → support@veloure.us (domain moved to veloure.us).
   var CONSENT_VERSION = 'veloure-web-consent-v3-2026-11-17';
@@ -193,7 +193,7 @@
   var pillLinks = Array.prototype.slice.call(document.querySelectorAll('.pill a[data-scene]'));
   var lastIdx = -1;
   function markReady() { document.body.classList.add('ready'); }
-  window.__orionStage = function (s, introDone) {
+  window.__veloureStage = function (s, introDone) {
     if (introDone && !document.body.classList.contains('ready')) markReady();
     var idx = Math.round(s);
     if (hud) {
@@ -224,7 +224,7 @@
       ticking = false;
       var line = window.innerHeight * 0.38, cur = 0;
       secs.forEach(function (el, i) { if (el.getBoundingClientRect().top <= line) cur = i; });
-      window.__orionStage(cur, false);
+      window.__veloureStage(cur, false);
     }
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
     spy();
