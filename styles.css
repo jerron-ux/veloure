@@ -57,9 +57,9 @@ html.has-cursor,html.has-cursor *{cursor:none !important}
 .cursor{position:fixed;left:0;top:0;z-index:120;pointer-events:none;mix-blend-mode:difference;display:none}
 html.has-cursor .cursor{display:block}
 .cursor i{position:absolute;left:0;top:0;border-radius:50%;transform:translate(-50%,-50%)}
-.cursor .dot{width:6px;height:6px;background:var(--ink)}
-.cursor .ring{width:34px;height:34px;border:1px solid rgba(var(--on-rgb),.75);transition:transform .3s var(--ease),border-color .3s,width .3s,height .3s}
-.cursor.hot .ring,html.card-hover .cursor .ring{transform:translate(-50%,-50%) scale(1.6);border-color:var(--ink)}
+.cursor .dot{width:6px;height:6px;background:rgb(var(--cursor-rgb))}
+.cursor .ring{width:34px;height:34px;border:1px solid rgba(var(--cursor-rgb),.85);transition:transform .3s var(--ease),border-color .3s,width .3s,height .3s}
+.cursor.hot .ring,html.card-hover .cursor .ring{transform:translate(-50%,-50%) scale(1.6);border-color:rgb(var(--cursor-rgb))}
 .cursor.down .ring{transform:translate(-50%,-50%) scale(.75)}
 
 /* ---------- interface ---------- */

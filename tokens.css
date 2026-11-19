@@ -10,6 +10,7 @@
   --bg-2: #ECE8E1;          /* nav bar / raised plates */
   --bg-3: #E4DFD7;          /* hover surfaces, select options */
   --bg-rgb: 244,241,235;
+  --cursor-rgb: 255,255,255; /* cursor is difference-blended: white reads dark on paper, light on dark text */
   --on-rgb: 23,18,14;       /* ink as r,g,b — for the alpha overlays (plates, rules, hairlines) */
   --scrim-rgb: 244,241,235; /* glass panels / scrims are frosted paper on light */
   --shadow-rgb: 23,18,14;   /* drop shadows and the modal backdrop */
@@ -67,6 +68,7 @@ html[data-theme="dark"] {
   --bg-2: #232323;          /* app panel */
   --bg-3: #2A2A2A;          /* app panel-2 */
   --bg-rgb: 28,28,28;
+  --cursor-rgb: 237,230,216;
   --on-rgb: 237,230,216;    /* app ink #ede6d8 as r,g,b — the app's glass/edge overlays are built on it */
   --scrim-rgb: 20,20,20;
   --shadow-rgb: 0,0,0;

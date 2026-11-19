@@ -243,7 +243,7 @@
       float core = smoothstep(1.0, 0.0, r);
       float rim = smoothstep(0.7, 1.0, r) * smoothstep(1.0, 0.86, r);
       float a = mix(core, 0.3 * core + rim * 0.55 + 0.16, vBlur);
-      gl_FragColor = vec4(mix(vColor, vColor * 0.45, uLight), a * vAlpha * mix(0.85, 0.6, uLight) * uFade);
+      gl_FragColor = vec4(mix(vColor, vColor * 0.20, uLight), a * vAlpha * mix(0.85, 0.82, uLight) * uFade);   // light theme: darker specks (ruling 2026-11-19, option B)
     }`;
   const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 }, uLight: { value: P.light } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: P.light ? THREE.NormalBlending : THREE.AdditiveBlending });
   let dust = null, platMat = null;   // platMat: the platform dust's own material so only it can fade (ruling 2026-11-18)
