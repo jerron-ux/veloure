@@ -228,16 +228,16 @@
       gl_Position = projectionMatrix * mv;
     }`;
   const dustFS = `
-    varying float vBlur; varying vec3 vColor; varying float vAlpha;
+    uniform float uFade; varying float vBlur; varying vec3 vColor; varying float vAlpha;
     void main(){
       vec2 uv = gl_PointCoord - 0.5; float r = length(uv) * 2.0; if (r > 1.0) discard;
       float core = smoothstep(1.0, 0.0, r);
       float rim = smoothstep(0.7, 1.0, r) * smoothstep(1.0, 0.86, r);
       float a = mix(core, 0.3 * core + rim * 0.55 + 0.16, vBlur);
-      gl_FragColor = vec4(vColor, a * vAlpha * 0.85);
+      gl_FragColor = vec4(vColor, a * vAlpha * 0.85 * uFade);
     }`;
-  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-  let dust = null;
+  const dustMat = new THREE.ShaderMaterial({ uniforms: { uTime: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uFocus: { value: 5.2 }, uPointer: { value: new THREE.Vector3(0, 0, 0) }, uFade: { value: 1 } }, vertexShader: dustVS, fragmentShader: dustFS, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  let dust = null, platMat = null;   // platMat: the platform dust's own material so only it can fade (ruling 2026-11-18)
   function buildDust() {
     const N = mobile ? 900 : 2300; const pos = new Float32Array(N * 3), size = new Float32Array(N), sd = new Float32Array(N), col = new Float32Array(N * 3);
     const span = L + 14, spreadX = 10;
@@ -293,7 +293,8 @@
       platform = new THREE.Group();
       // slab removed (ruling 2026-11-18, Eric's "cut" report): the dark shelf showed as a black bar across the ring from certain angles.
       // The gold dust particles remain, floating without the shelf.
-      platform.add(pointsCloud(mobile ? 320 : 1000, () => { const x = (rnd() - 0.5) * 26, z = -1.2 - rnd() * rnd() * 8; const lift = (rnd() - 0.5) * 0.5 * (1 + (-z) * 0.08); const warm = rnd() < 0.72; return { p: [x, lift, z], c: warm ? [0.92, 0.78, 0.44] : [0.86, 0.9, 0.95] }; }, 2.6));
+      const platDust = pointsCloud(mobile ? 320 : 1000, () => { const x = (rnd() - 0.5) * 26, z = -1.2 - rnd() * rnd() * 8; const lift = (rnd() - 0.5) * 0.5 * (1 + (-z) * 0.08); const warm = rnd() < 0.72; return { p: [x, lift, z], c: warm ? [0.92, 0.78, 0.44] : [0.86, 0.9, 0.95] }; }, 2.6);
+      platMat = dustMat.clone(); platMat.uniforms.uFade.value = 0; platDust.material = platMat; platform.add(platDust);
       platform.position.set(0, yAt(S.statement, 0.5) + 1.05, 0); platform.visible = false;
       journey.add(platform);
     }
@@ -416,7 +417,8 @@
     emblem2.rotation.y = Math.sin(t * 0.3 + 1) * 0.2 + ptr.x * 0.3;
     emblem2.rotation.x = Math.sin(t * 0.22) * 0.06 - ptr.y * 0.2;
 
-    if (platform) platform.visible = p > 0.45 && p < 2.4;
+    // platform dust: fade in over ~half a screen (centred where it used to pop on at 0.45) and out again below the statement (ruling 2026-11-18: smoother hand-off)
+    if (platform) { const fade = THREE.MathUtils.smoothstep(p, 0.2, 0.7) * (1 - THREE.MathUtils.smoothstep(p, 2.15, 2.65)); platform.visible = fade > 0.002; if (platMat) platMat.uniforms.uFade.value = fade; }
 
     // text glitch + idle flicker
     for (const tp of textPlanes) { tp.material.uniforms.uTime.value = t; tp.material.uniforms.uGlitch.value = glitch * (0.7 + 0.3 * Math.sin(t * 3.1)); }
@@ -437,6 +439,7 @@
     // dust: pointer in world space at z=0 plane; focus follows the camera
     const vw = visW(); tmp.set(ptr.x * vw / 2 + camera.position.x, camY - ptr.y * VIS_H / 2, 0);
     dustMat.uniforms.uPointer.value.copy(tmp); dustMat.uniforms.uTime.value = t; dustMat.uniforms.uFocus.value = camera.position.z - 0.2;
+    if (platMat) { platMat.uniforms.uPointer.value.copy(tmp); platMat.uniforms.uTime.value = t; platMat.uniforms.uFocus.value = dustMat.uniforms.uFocus.value; }
 
     renderer.render(scene, camera);
     if (!readySent && fontsReady) { readySent = true; document.dispatchEvent(new CustomEvent('world:ready')); }
